@@ -1,23 +1,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:gravity="center_horizontal"
-    android:orientation="vertical"  tools:context=".LoginActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".activities.LoginActivity">
 
+    <EditText
+        android:id="@+id/editTextUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:maxLines="1" />
 
-    <EditText android:id="@+id/email" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:hint="Email"
-        android:inputType="textEmailAddress" android:maxLines="1"
-        android:singleLine="true" />
-
-    <EditText android:id="@+id/password" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:hint="@string/prompt_password"
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
         android:inputType="textPassword"
-        android:maxLines="1" android:singleLine="true" />
+        android:maxLines="1" />
 
-    <Button android:id="@+id/sign_in_register"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" android:text="SIGN IN"
-     />
+    <Button
+        android:id="@+id/buttonSignin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="SIGN IN" />
 
 </LinearLayout>
 
