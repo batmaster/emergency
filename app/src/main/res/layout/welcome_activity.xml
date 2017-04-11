@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/textView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="เหตุย้อนหลัง"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/button4"
+        android:onClick="face3"/>
+
+    <Button
+        android:text="เหตุกำลังเนินการ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button3"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/button4"
+        android:onClick="face2"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LOGOUT"
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/button4"
+        />
+
+
+    <Button
+        android:text="12.17 ว40 จยยล้มเอง บ้านทางข้าม"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button12"
+        android:background="#FF0000"
+        android:layout_below="@+id/button11"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="11dp"
+        android:onClick="face6"/>
+
+    <Button
+        android:text="12.15 ว40 สิบแปดล้อพ่วงเสียหลักพลิกคว่ำ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button11"
+        android:background="#FF0000"
+        android:layout_marginTop="11dp"
+        android:layout_below="@+id/button10"
+        android:layout_alignParentStart="true"
+        android:onClick="face6"/>
+
+    <Button
+        android:text="12.57 เหตุงูเข้าบ้าน"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button14"
+        android:elevation="0dp"
+        android:textColorLink="?android:attr/textColorHighlightInverse"
+        android:background="#ffaa00"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:onClick="face6"/>
+
+    <Button
+        android:text="เพิ่ม"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/button16"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="face5"/>/>
+
+    <Button
+        android:text="12.11  ว40 จยย+จยย เจ็บ4 ราย"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button10"
+        android:background="#FF0000"
+        android:layout_below="@+id/button16"
+        android:layout_alignParentStart="true"
+        android:onClick="face6"/>
+
+</RelativeLayout>
