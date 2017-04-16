@@ -2,6 +2,10 @@ package com.example.application.emergency.services;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by batmaster on 2/26/16 AD.
@@ -16,15 +20,14 @@ public class Preferences {
     public Preferences(Context context) {
         sp = context.getSharedPreferences("emergency", Context.MODE_PRIVATE);
         editor = sp.edit();
-    }
 
-    public boolean getBoolean(String key) {
-        return sp.getBoolean(key, false);
-    }
+        Map<String, ?> keys = sp.getAll();
 
-    public void putBoolean(String key, boolean value) {
-        editor.putBoolean(key, value);
-        editor.commit();
+        Log.d("Preferences", "== start ==");
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            Log.d("Preferences", entry.getKey() + ": " + entry.getValue().toString());
+        }
+        Log.d("Preferences", "== stop ==");
     }
 
     public String getString(String key) {

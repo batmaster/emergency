@@ -29,7 +29,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".alarm_listActivity" />
-        <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.WelcomeActivity" />
         <activity android:name=".notification" />
         <activity android:name=".event_type" />
@@ -37,7 +36,14 @@
         <activity android:name=".processing" />
         <activity android:name=".history_data" />
         <activity android:name=".insert_em" />
-        <activity android:name=".acc"></activity>
+        <activity android:name=".acc" />
+
+
+        <activity android:name=".activities.LoginActivity" >
+
+        </activity>
+        <activity android:name=".activities.ListActivity">
+        </activity>
     </application>
 
 </manifest>

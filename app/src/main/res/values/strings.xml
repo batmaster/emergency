@@ -16,5 +16,8 @@
     </string>
     <string name="tambah_biodata" />
 
+    <string name="drawer_open">Open Navigation drawer</string>
+    <string name="drawer_close">Close Navigation drawer</string>
+
 
 </resources>

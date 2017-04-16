@@ -33,6 +33,11 @@ public class LoginActivity extends AppCompatActivity {
 
         app = (EmergencyApplication) getApplication();
 
+        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
+            startActivity(new Intent(getApplicationContext(), ListActivity.class));
+            finish();
+        }
+
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonSignin = (Button) findViewById(R.id.buttonSignin);
@@ -41,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("function", "login");
+                params.put("function", "check_user");
                 params.put("username", editTextUsername.getText().toString());
                 params.put("password", editTextPassword.getText().toString());
                 app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
@@ -50,7 +55,8 @@ public class LoginActivity extends AppCompatActivity {
                         if (data != null) {
                             try {
                                 app.getPreferences().putString(Preferences.KEY_OFFICER_ID, data.getString("id"));
-                                startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                                startActivity(new Intent(getApplicationContext(), ListActivity.class));
+                                finish();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

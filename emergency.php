@@ -23,7 +23,7 @@
             }
 
             logs("\t\t\t". json_encode($rows));
-            return $rows;
+            return ["array" => $rows];
         }
     }
 
@@ -38,6 +38,22 @@
         }
     }
 
+    if (isset($_GET["function"])) {
+        $g = $_GET["function"];
+        if ($g == "clear") {
+            $fileHandle = fopen("logs.txt", "r+") or die("Unable to open");
+            ftruncate($fileHandle, 0);
+            fclose($fileHandle);
+            echo "clear ok";
+        }
+        else {
+            echo "server ok";
+        }
+    }
+
+    //
+    //
+    //
     $function = $_POST["function"];
 
     if (isset($function)) {
@@ -48,39 +64,15 @@
             $username = $_POST["username"];
             $password = $_POST["password"];
 
-            echo json_encode(sql("SELECT COUNT(*) count FROM user WHERE username = '$username'", false));
+            echo json_encode(sql("SELECT id FROM officer WHERE username = '$username' AND password = '$password'", false));
         }
-        else if ($function == "add_user") {
-            $name = $_POST["name"];
-            $lastname = $_POST["lastname"];
-            $username = $_POST["username"];
-            $password = $_POST["password"];
-            $email = $_POST["email"];
-            $level = $_POST["level"];
-            $group = $_POST["group"];
-            $phone = $_POST["phone"];
-            $birthday = $_POST["birthday"];
+        /******************** #accident ********************/
+        else if ($function == "get_accidents") {
+            $status = $_POST["status"];
 
-            if ($level == 0) {
-                sql("INSERT INTO user (username, password, name, lastname, email, level, phone, birthday, register_date)
-                VALUES ('$username', '$password', '$name', '$lastname', '$email', $level, '$phone', '$birthday', NOW())");
-            }
-            else {
-                $code = "gl" . (intval(sql("SELECT id FROM `group` ORDER BY id DESC LIMIT 1", false)[id]) + 1);
-                sql("INSERT INTO `group` (title, code) VALUES ('$group', '$code')");
-
-                $group_id = sql("SELECT id FROM `group` WHERE code = '$code'", false)[id];
-
-                sql("INSERT INTO user (username, password, name, lastname, email, level, phone, birthday, register_date, group_id)
-                VALUES ('$username', '$password', '$name', '$lastname', '$email', $level, '$phone', '$birthday', NOW(), $group_id)");
-            }
-
-            echo json_encode(sql("SELECT id, group_id FROM user WHERE username = '$username' AND password = '$password'", false));
+            echo json_encode(sql("SELECT a.type_id, at.title type, a.title, a.people_id, p.name people, a.officer_id, (SELECT o.name FROM officer o WHERE o.id = a.officer_id) officer, a.photo, a.detail, a.location_x, a.location_y, a.status, a.date, a.approve_date
+                FROM accident a, accident_type at, people p
+                WHERE a.type_id = at.id AND a.people_id = p.id AND a.status = $status"));
         }
-        else if ($function == "login") {
-            $username = $_POST["username"];
-            $password = $_POST["password"];
-
-            echo json_encode(sql("SELECT id, level, group_id FROM user WHERE (username = '$username' OR email = '$username') AND password = '$password'", false));
-        }
+    }
 ?>
