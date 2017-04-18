@@ -31,10 +31,13 @@ public class HTTPService {
     }
 
     public void callPHP(HashMap<String, String> params, final OnResponseCallback<JSONObject> responseCallback) {
+        Log.d("HTTP", params.toString());
+
         StringRequest request = new StringRequest(Request.Method.POST, BASE_URL, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String s) {
+                Log.d("HTTP", "onResponse " + s);
 
                 try {
                     JSONObject json = new JSONObject(s);
@@ -42,6 +45,7 @@ public class HTTPService {
                     responseCallback.onResponse(true, null, json);
 
                 } catch (JSONException e) {
+                    Log.d("HTTP", "JSONException " + e.getMessage());
                     e.printStackTrace();
                     responseCallback.onResponse(true, e, null);
                 }
@@ -50,7 +54,7 @@ public class HTTPService {
 
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.d("httpapi", "API 1 onErrorResponse: " + volleyError);
+                Log.d("HTTP", "onErrorResponse " + volleyError);
                 responseCallback.onResponse(false, volleyError, null);
             }
         });

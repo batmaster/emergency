@@ -1,4 +1,4 @@
-package com.example.application.emergency.activities;
+package com.example.application.emergency.activities.list;
 
 public class ListModel {
     private int typeId;

@@ -1,4 +1,4 @@
-package com.example.application.emergency.activities;
+package com.example.application.emergency.activities.list;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,14 +21,11 @@ public class ListPagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                ListFragment tab1 = ListFragment.getInstance(ListFragment.LIST_PENDING);
-                return tab1;
+                return ListFragment.getInstance(ListFragment.LIST_PENDING);
             case 1:
-                ListFragment tab2 = ListFragment.getInstance(ListFragment.LIST_PROGRESSING);
-                return tab2;
+                return ListFragment.getInstance(ListFragment.LIST_PROGRESSING);
             case 2:
-                ListFragment tab3 = ListFragment.getInstance(ListFragment.LIST_DONE);
-                return tab3;
+                return ListFragment.getInstance(ListFragment.LIST_DONE);
             default:
                 return null;
         }

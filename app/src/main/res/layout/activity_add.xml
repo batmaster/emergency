@@ -26,17 +26,12 @@
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="เหตุการณ์ใหม่" />
+                android:text="เหตุการณ์" />
 
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="เหตุกำลังดำเนินการ" />
-
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="เหตุย้อนหลัง" />
+                android:text="รูปภาพ" />
 
         </android.support.design.widget.TabLayout>
 
@@ -44,7 +39,7 @@
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="32px"/>
+            android:padding="32px" />
 
     </LinearLayout>
 
@@ -52,7 +47,6 @@
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="10">
-
 
         <Button
             android:id="@+id/buttonAdd"
@@ -63,5 +57,11 @@
             android:text="เพิ่ม" />
 
     </LinearLayout>
+
+
+
+
+
+
 
 </LinearLayout>

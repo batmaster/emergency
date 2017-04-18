@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.application.emergency.R;
+import com.example.application.emergency.activities.list.ListActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
@@ -34,7 +35,9 @@ public class LoginActivity extends AppCompatActivity {
         app = (EmergencyApplication) getApplication();
 
         if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
-            startActivity(new Intent(getApplicationContext(), ListActivity.class));
+            Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+            intent.putExtra("level", "officer");
+            startActivity(intent);
             finish();
         }
 
@@ -55,7 +58,9 @@ public class LoginActivity extends AppCompatActivity {
                         if (data != null) {
                             try {
                                 app.getPreferences().putString(Preferences.KEY_OFFICER_ID, data.getString("id"));
-                                startActivity(new Intent(getApplicationContext(), ListActivity.class));
+                                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                                intent.putExtra("level", "officer");
+                                startActivity(intent);
                                 finish();
                             } catch (JSONException e) {
                                 e.printStackTrace();

@@ -66,6 +66,11 @@
 
             echo json_encode(sql("SELECT id FROM officer WHERE username = '$username' AND password = '$password'", false));
         }
+        /******************** #accident type ********************/
+        else if ($function == "get_accident_types") {
+
+            echo json_encode(sql("SELECT id, title FROM accident_type"));
+        }
         /******************** #accident ********************/
         else if ($function == "get_accidents") {
             $status = $_POST["status"];

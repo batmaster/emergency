@@ -1,4 +1,4 @@
-package com.example.application.emergency.activities;
+package com.example.application.emergency.activities.list;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -69,11 +69,12 @@ public class ListFragment extends Fragment {
             public void onResponse(boolean success, Throwable error, JSONObject data) {
                 if (data != null) {
                     try {
-                        ArrayList<ListModel> list = new ArrayList<ListModel>();
                         JSONArray a = data.getJSONArray("array");
 
+                        ArrayList<ListModel> list = new ArrayList<ListModel>();
                         for (int i = 0; i < a.length(); i++) {
                             JSONObject o = a.getJSONObject(i);
+
                             list.add(new ListModel(
                                     o.getInt("type_id"),
                                     o.getString("type"),
