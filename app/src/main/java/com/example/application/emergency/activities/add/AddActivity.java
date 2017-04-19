@@ -19,6 +19,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -34,8 +35,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.application.emergency.R;
+import com.example.application.emergency.activities.list.ListActivity;
 import com.example.application.emergency.activities.list.ListPagerAdapter;
 import com.example.application.emergency.services.EmergencyApplication;
+import com.example.application.emergency.services.HTTPService;
+import com.example.application.emergency.services.Preferences;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,12 +52,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class AddActivity extends AppCompatActivity {
 
     private EmergencyApplication app;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private AddPagerAdapter pagerAdapter;
 
     private Button buttonAdd;
 
@@ -67,7 +78,7 @@ public class AddActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter pagerAdapter = new AddPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        pagerAdapter = new AddPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -91,6 +102,49 @@ public class AddActivity extends AppCompatActivity {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                DetailFragment detailFragment = (DetailFragment) pagerAdapter.getItem(0);
+                ImagesFragment imagesFragment = (ImagesFragment) pagerAdapter.getItem(1);
+
+                String title = detailFragment.getEditTextTitle().getText().toString();
+                String detail = detailFragment.getEditTextDetail().getText().toString();
+                int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
+                double locationX = detailFragment.getMarker().getPosition().longitude;
+                double locationY = detailFragment.getMarker().getPosition().latitude;
+                final ArrayList<Uri> imageUris = imagesFragment.getImageUris();
+
+                String peopleId = app.getPreferences().getString(Preferences.KEY_OFFICER_ID);
+                if (peopleId == null) {
+                    TelephonyManager tManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+                    peopleId = tManager.getDeviceId();
+                }
+
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("function", "add_accident");
+                params.put("title", title);
+                params.put("detail", detail);
+                params.put("type_id", String.valueOf(typeId));
+                params.put("location_x", String.valueOf(locationX));
+                params.put("location_y", String.valueOf(locationY));
+                params.put("people_id", peopleId);
+
+                app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+                    @Override
+                    public void onResponse(boolean success, Throwable error, JSONObject data) {
+                        if (data != null) {
+                            try {
+                                String id = data.getString("id");
+                                app.getHttpService().upload(imageUris, id);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+
+//                app.getHttpService().upload(imageUris);
 
             }
         });

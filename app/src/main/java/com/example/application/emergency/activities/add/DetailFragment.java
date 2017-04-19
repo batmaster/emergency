@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,8 +53,12 @@ public class DetailFragment extends Fragment {
 
     private Marker marker;
 
+    private static DetailFragment fragment;
+
     public static DetailFragment getInstance() {
-        DetailFragment fragment = new DetailFragment();
+        if (fragment == null) {
+            fragment = new DetailFragment();
+        }
         return fragment;
     }
 
@@ -64,6 +69,7 @@ public class DetailFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_add_detail, container, false);
 
         editTextTitle = (EditText) v.findViewById(R.id.editTextTitle);
+        Log.d("editTextTitle", "editTextTitle");
         editTextDetail = (EditText) v.findViewById(R.id.editTextDetail);
 
         spinner = (Spinner) v.findViewById(R.id.spinner);
@@ -129,9 +135,27 @@ public class DetailFragment extends Fragment {
             }
         });
 
-
-
         return v;
     }
 
+
+    public EditText getEditTextDetail() {
+        return editTextDetail;
+    }
+
+    public EditText getEditTextTitle() {
+        return editTextTitle;
+    }
+
+    public Spinner getSpinner() {
+        return spinner;
+    }
+
+    public ArrayList<Integer> getSpinnerValue() {
+        return spinnerValue;
+    }
+
+    public Marker getMarker() {
+        return marker;
+    }
 }

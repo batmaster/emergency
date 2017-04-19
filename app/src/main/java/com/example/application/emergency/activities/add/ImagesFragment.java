@@ -29,6 +29,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 /**
  * Created by batmaster on 4/15/2017 AD.
  */
@@ -40,13 +42,19 @@ public class ImagesFragment extends Fragment {
     private LinearLayout layoutGallery;
     private ImageView imageViewCamera;
     private ImageView imageViewAlbum;
+    private ArrayList<Uri> imageUris;
+
     private ImageView imageView;
 
     public static final int RESULT_CAMERA = 201;
     public static final int RESULT_GALLERY = 202;
 
+    private static ImagesFragment fragment;
+
     public static ImagesFragment getInstance() {
-        ImagesFragment fragment = new ImagesFragment();
+        if (fragment == null) {
+            fragment = new ImagesFragment();
+        }
         return fragment;
     }
 
@@ -80,14 +88,16 @@ public class ImagesFragment extends Fragment {
             }
         });
 
+        imageUris = new ArrayList<Uri>();
+
         imageView = (ImageView) v.findViewById(R.id.imageView);
-
-
 
         return v;
     }
 
-
+    public ArrayList<Uri> getImageUris() {
+        return imageUris;
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -96,8 +106,7 @@ public class ImagesFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK && data != null) {
 
 
-            if (requestCode == RESULT_CAMERA) {
-                final Bitmap photo = (Bitmap) data.getExtras().get("data");
+            if (requestCode == RESULT_CAMERA || requestCode == RESULT_GALLERY) {
                 final Uri imageUri = data.getData();
 
                 Resources r = getResources();
@@ -117,28 +126,7 @@ public class ImagesFragment extends Fragment {
                 layoutGallery.addView(i, layoutGallery.getChildCount() - 2);
 
                 Glide.with(getContext()).load(imageUri).centerCrop().into(i);
-            }
-            else if (requestCode == RESULT_GALLERY) {
-                    final Uri imageUri = data.getData();
-
-                    Resources r = getResources();
-                    int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 110, r.getDisplayMetrics());
-                    int pd = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
-
-                    final ImageView i = new ImageView(getContext());
-                    i.setLayoutParams(new LinearLayout.LayoutParams(size, size));
-                    i.setAdjustViewBounds(true);
-                    i.setPadding(pd, pd, pd, pd);
-                    i.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
-                        }
-                    });
-                    layoutGallery.addView(i, layoutGallery.getChildCount() - 2);
-
-                    Glide.with(getContext()).load(imageUri).centerCrop().into(i);
-
+                imageUris.add(imageUri);
             }
         }
     }
