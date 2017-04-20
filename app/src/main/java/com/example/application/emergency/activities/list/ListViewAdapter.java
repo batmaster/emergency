@@ -1,6 +1,9 @@
 package com.example.application.emergency.activities.list;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.application.emergency.R;
+import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.services.ReadableTime;
 
 import java.util.ArrayList;
@@ -20,10 +24,12 @@ public class ListViewAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<ListModel> list;
+    private Activity activity;
 
-    public ListViewAdapter(Context context, ArrayList<ListModel> list) {
+    public ListViewAdapter(Context context, ArrayList<ListModel> list, Activity activity) {
         this.context = context;
         this.list = list;
+        this.activity = activity;
     }
 
     @Override
@@ -42,7 +48,7 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if(view == null) {
@@ -55,19 +61,14 @@ public class ListViewAdapter extends BaseAdapter {
         TextView textViewTime = (TextView) view.findViewById(R.id.textViewTime);
         textViewTime.setText(ReadableTime.get(list.get(i).getDate()));
 
-        TextView textViewPeople = (TextView) view.findViewById(R.id.textViewPeople);
-        textViewPeople.setText(list.get(i).getPeople());
-
-        TextView textViewOfficer = (TextView) view.findViewById(R.id.textViewOfficer);
-        textViewOfficer.setText(list.get(i).getOfficer());
-        if (list.get(i).getOfficer() == "null") {
-            textViewOfficer.setVisibility(View.INVISIBLE);
-        }
+        view.setBackgroundColor(Color.parseColor(list.get(i).getColor()));
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(activity.getApplicationContext(), AddActivity.class);
+                intent.putExtra("aid", list.get(i).getId());
+                activity.startActivity(intent);
             }
         });
 

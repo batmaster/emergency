@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Emergency</string>
     <string name="title_activity_login">Sign in</string>
-
+    
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -18,6 +18,12 @@
 
     <string name="drawer_open">Open Navigation drawer</string>
     <string name="drawer_close">Close Navigation drawer</string>
+
+    <string-array name="status">
+        <item>เหตุการณ์ใหม่</item>
+        <item>เหตุกำลังดำเนินการ</item>
+        <item>เหตุย้อนหลัง</item>
+    </string-array>
 
 
 </resources>

@@ -1,14 +1,10 @@
 package com.example.application.emergency.activities.list;
 
 public class ListModel {
+    private int id;
     private int typeId;
     private String type;
     private String title;
-    private int peopleId;
-    private String people;
-    private int officerId;
-    private String officer;
-    private String photo;
     private String detail;
     private double locationX;
     private double locationY;
@@ -16,21 +12,28 @@ public class ListModel {
     private String date;
     private String approveDate;
 
-    public ListModel(int typeId, String type, String title, int peopleId, String people, int officerId, String officer, String photo, String detail, double locationX, double locationY, int status, String date, String approveDate) {
+    private String color;
+
+    public ListModel(int id, int typeId, String type, String title, String detail, double locationX, double locationY, int status, String date, String approveDate, String color) {
+        this.id = id;
         this.typeId = typeId;
         this.type = type;
         this.title = title;
-        this.peopleId = peopleId;
-        this.people = people;
-        this.officerId = officerId;
-        this.officer = officer;
-        this.photo = photo;
         this.detail = detail;
         this.locationX = locationX;
         this.locationY = locationY;
         this.status = status;
         this.date = date;
         this.approveDate = approveDate;
+        this.color = color;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getTypeId() {
@@ -57,46 +60,6 @@ public class ListModel {
         this.title = title;
     }
 
-    public int getPeopleId() {
-        return peopleId;
-    }
-
-    public void setPeopleId(int peopleId) {
-        this.peopleId = peopleId;
-    }
-
-    public String getPeople() {
-        return people;
-    }
-
-    public void setPeople(String people) {
-        this.people = people;
-    }
-
-    public int getOfficerId() {
-        return officerId;
-    }
-
-    public void setOfficerId(int officerId) {
-        this.officerId = officerId;
-    }
-
-    public String getOfficer() {
-        return officer;
-    }
-
-    public void setOfficer(String officer) {
-        this.officer = officer;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
-
     public String getDetail() {
         return detail;
     }
@@ -109,7 +72,7 @@ public class ListModel {
         return locationX;
     }
 
-    public void setLocationX(float locationX) {
+    public void setLocationX(double locationX) {
         this.locationX = locationX;
     }
 
@@ -117,7 +80,7 @@ public class ListModel {
         return locationY;
     }
 
-    public void setLocationY(float locationY) {
+    public void setLocationY(double locationY) {
         this.locationY = locationY;
     }
 
@@ -143,5 +106,13 @@ public class ListModel {
 
     public void setApproveDate(String approveDate) {
         this.approveDate = approveDate;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

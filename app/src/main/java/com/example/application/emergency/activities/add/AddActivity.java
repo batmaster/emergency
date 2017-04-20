@@ -62,6 +62,11 @@ public class AddActivity extends AppCompatActivity {
 
     private EmergencyApplication app;
 
+    private DetailFragment detailFragment;
+    private ImagesFragment imagesFragment;
+
+    private int aid;
+
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private AddPagerAdapter pagerAdapter;
@@ -74,6 +79,8 @@ public class AddActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add);
 
         app = (EmergencyApplication) getApplication();
+
+        aid = getIntent().getIntExtra("aid", -1);
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
@@ -102,9 +109,6 @@ public class AddActivity extends AppCompatActivity {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                DetailFragment detailFragment = (DetailFragment) pagerAdapter.getItem(0);
-                ImagesFragment imagesFragment = (ImagesFragment) pagerAdapter.getItem(1);
 
                 String title = detailFragment.getEditTextTitle().getText().toString();
                 String detail = detailFragment.getEditTextDetail().getText().toString();
@@ -136,6 +140,9 @@ public class AddActivity extends AppCompatActivity {
                                 String id = data.getString("id");
                                 app.getHttpService().upload(imageUris, id);
 
+                                startActivity(new Intent(getApplicationContext(), ListActivity.class));
+                                finish();
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -148,6 +155,18 @@ public class AddActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public int getAid() {
+        return aid;
+    }
+
+    public void setDetailFragment(DetailFragment detailFragment) {
+        this.detailFragment = detailFragment;
+    }
+
+    public void setImagesFragment(ImagesFragment imagesFragment) {
+        this.imagesFragment = imagesFragment;
     }
 
     @Override

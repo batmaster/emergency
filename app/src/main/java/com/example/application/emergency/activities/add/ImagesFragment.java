@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.application.emergency.R;
+import com.example.application.emergency.activities.list.ListModel;
+import com.example.application.emergency.activities.list.ListViewAdapter;
 import com.example.application.emergency.services.EmergencyApplication;
+import com.example.application.emergency.services.HTTPService;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,7 +33,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by batmaster on 4/15/2017 AD.
@@ -38,6 +47,8 @@ import java.util.ArrayList;
 public class ImagesFragment extends Fragment {
 
     private static EmergencyApplication app;
+
+    private int aid;
 
     private LinearLayout layoutGallery;
     private ImageView imageViewCamera;
@@ -61,6 +72,9 @@ public class ImagesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         app = (EmergencyApplication) getActivity().getApplication();
+
+        aid = ((AddActivity)getActivity()).getAid();
+        ((AddActivity)getActivity()).setImagesFragment(this);
 
         View v = inflater.inflate(R.layout.fragment_add_images, container, false);
 
@@ -92,6 +106,39 @@ public class ImagesFragment extends Fragment {
 
         imageView = (ImageView) v.findViewById(R.id.imageView);
 
+        HashMap<String, String> params2 = new HashMap<String, String>();
+        params2.put("function", "get_images");
+        params2.put("aid", String.valueOf(aid));
+        app.getHttpService().callPHP(params2, new HTTPService.OnResponseCallback<JSONObject>() {
+            @Override
+            public void onResponse(boolean success, Throwable error, JSONObject data) {
+                if (data != null) {
+                    try {
+                        JSONArray a = data.getJSONArray("array");
+
+                        ArrayList<ListModel> list = new ArrayList<ListModel>();
+                        for (int i = 0; i < a.length(); i++) {
+                            JSONObject o = a.getJSONObject(i);
+
+                            Uri imageUri = Uri.parse(o.getString("image"));
+
+                            Log.d("imageUri", imageUri.toString());
+
+                            ImageView im = getImageView(imageUri);
+
+                            layoutGallery.addView(im, layoutGallery.getChildCount() - 2);
+
+                            Glide.with(getContext()).load(imageUri).centerCrop().into(im);
+                            Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
         return v;
     }
 
@@ -107,28 +154,36 @@ public class ImagesFragment extends Fragment {
 
 
             if (requestCode == RESULT_CAMERA || requestCode == RESULT_GALLERY) {
-                final Uri imageUri = data.getData();
+                Uri imageUri = data.getData();
 
-                Resources r = getResources();
-                int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 110, r.getDisplayMetrics());
-                int pd = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
+                ImageView i = getImageView(imageUri);
 
-                final ImageView i = new ImageView(getContext());
-                i.setLayoutParams(new LinearLayout.LayoutParams(size, size));
-                i.setAdjustViewBounds(true);
-                i.setPadding(pd, pd, pd, pd);
-                i.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
-                    }
-                });
                 layoutGallery.addView(i, layoutGallery.getChildCount() - 2);
 
                 Glide.with(getContext()).load(imageUri).centerCrop().into(i);
+                Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
                 imageUris.add(imageUri);
             }
         }
+    }
+
+    private ImageView getImageView(final Uri imageUri) {
+        Resources r = getResources();
+        int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 110, r.getDisplayMetrics());
+        int pd = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
+
+        final ImageView i = new ImageView(getContext());
+        i.setLayoutParams(new LinearLayout.LayoutParams(size, size));
+        i.setAdjustViewBounds(true);
+        i.setPadding(pd, pd, pd, pd);
+        i.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
+            }
+        });
+
+        return i;
     }
 
 }

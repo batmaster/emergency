@@ -15,11 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.LoginActivity;
+import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.Preferences;
 
@@ -29,6 +31,8 @@ public class ListActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+
+    private Button buttonAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,15 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
+            }
+        });
+
+        buttonAdd = (Button) findViewById(R.id.buttonAdd);
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), AddActivity.class));
+                finish();
             }
         });
     }

@@ -76,9 +76,24 @@
         else if ($function == "get_accidents") {
             $status = $_POST["status"];
 
-            echo json_encode(sql("SELECT a.type_id, at.title type, a.title, a.people_id, p.name people, a.officer_id, (SELECT o.name FROM officer o WHERE o.id = a.officer_id) officer, a.photo, a.detail, a.location_x, a.location_y, a.status, a.date, a.approve_date
-                FROM accident a, accident_type at, people p
-                WHERE a.type_id = at.id AND a.people_id = p.id AND a.status = $status"));
+            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.detail, a.location_x, a.location_y, a.status, a.date, a.approve_date, at.color
+                FROM accident a, accident_type at
+                WHERE a.type_id = at.id AND a.status = $status
+                ORDER BY DATE(date) DESC"));
+        }
+        else if ($function == "get_accident") {
+            $aid = $_POST["aid"];
+
+            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.detail, a.location_x, a.location_y, a.status, a.date, a.approve_date, at.color
+                FROM accident a, accident_type at
+                WHERE a.type_id = at.id AND a.id = $aid"));
+        }
+        else if ($function == "get_images") {
+            $aid = $_POST["aid"];
+
+            $url = 'http://'. $_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'] . "/";
+
+            echo json_encode(sql("SELECT CONCAT('$url', image) image FROM accident_image WHERE accident_id = $aid"));
         }
         else if ($function == "add_accident") {
             $title = $_POST["title"];

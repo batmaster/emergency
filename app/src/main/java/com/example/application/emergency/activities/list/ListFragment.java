@@ -76,24 +76,21 @@ public class ListFragment extends Fragment {
                             JSONObject o = a.getJSONObject(i);
 
                             list.add(new ListModel(
+                                    o.getInt("id"),
                                     o.getInt("type_id"),
                                     o.getString("type"),
                                     o.getString("title"),
-                                    o.getInt("people_id"),
-                                    o.getString("people"),
-                                    o.getInt("officer_id"),
-                                    o.getString("officer"),
-                                    o.getString("photo"),
                                     o.getString("detail"),
                                     o.getDouble("location_x"),
                                     o.getDouble("location_y"),
                                     o.getInt("status"),
                                     o.getString("date"),
-                                    o.getString("approve_date")
+                                    o.getString("approve_date"),
+                                    o.getString("color")
                             ));
                         }
 
-                        ListViewAdapter adapter = new ListViewAdapter(getContext(), list);
+                        ListViewAdapter adapter = new ListViewAdapter(getContext(), list, getActivity());
                         listView.setAdapter(adapter);
 
                     } catch (JSONException e) {
