@@ -128,6 +128,51 @@
         }
     }
 
+    if (isset($_GET["id"])) {
+        $aid = $_GET["id"];
+
+        $detail = sql("SELECT a.id, a.type_id, at.title type, a.title, a.detail, a.location_x, a.location_y, a.status, a.date, a.approve_date, at.color
+            FROM accident a, accident_type at
+            WHERE a.type_id = at.id AND a.id = $aid", false);
+
+        $url = 'http://'. $_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'] . "/";
+
+        $images = sql("SELECT CONCAT('$url', image) image FROM accident_image WHERE accident_id = $aid")["array"];
+
+        ?>
+
+        <html lang="en">
+        <head>
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+            <!-- Optional theme -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+            <!-- Latest compiled and minified JavaScript -->
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+            <meta charset="UTF-8">
+            <title><?php echo $detail["type"] . " - " . $detail["title"];?></title>
+        </head>
+        <body>
+            <div class="container">
+                <h1><?php echo $detail["title"];?></h1>
+                <h3><?php echo $detail["type"];?></h3>
+                <br>
+                <p><?php echo $detail["detail"];?></p>
+                <h4>รับแจ้งเหตุ: <?php echo $detail["date"];?></h4>
+
+                <?php for ($i = 0; $i < count($images); $i++) {?>
+                    <a href="<?php echo $images[$i]["image"]; ?>"><img src="<?php echo $images[$i]["image"]; ?>"class="img-thumbnail" style="height: 350px; margin 4px"></a>
+                <?php } ?>
+            </div>
+        </body>
+        </html>
+
+        <?php
+    }
+
 
     // logs(json_encode($_FILES));
 

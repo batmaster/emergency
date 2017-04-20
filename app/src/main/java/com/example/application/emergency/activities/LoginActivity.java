@@ -36,7 +36,6 @@ public class LoginActivity extends AppCompatActivity {
 
         if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
             Intent intent = new Intent(getApplicationContext(), ListActivity.class);
-            intent.putExtra("level", "officer");
             startActivity(intent);
             finish();
         }

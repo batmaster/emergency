@@ -13,8 +13,12 @@ import android.widget.Button;
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.activities.list.ListActivity;
+import com.example.application.emergency.services.EmergencyApplication;
+import com.example.application.emergency.services.Preferences;
 
 public class MainActivity extends AppCompatActivity {
+
+    private EmergencyApplication app;
 
     private Button buttonAdd;
     private Button buttonOfficer;
@@ -24,6 +28,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        app = (EmergencyApplication) getApplication();
+
+        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
+            Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         buttonAdd = (Button) findViewById(R.id.buttonAdd);
         buttonAdd.setOnClickListener(new View.OnClickListener() {

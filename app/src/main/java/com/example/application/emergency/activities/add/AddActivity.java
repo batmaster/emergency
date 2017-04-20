@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.application.emergency.R;
+import com.example.application.emergency.activities.MainActivity;
 import com.example.application.emergency.activities.list.ListActivity;
 import com.example.application.emergency.activities.list.ListPagerAdapter;
 import com.example.application.emergency.services.EmergencyApplication;
@@ -155,6 +156,19 @@ public class AddActivity extends AppCompatActivity {
 
             }
         });
+
+
+        if (aid != -1) {
+            buttonAdd.setText("อัพเดต");
+
+            if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
+                // TODO
+                buttonAdd.setEnabled(false);
+            }
+            else {
+                buttonAdd.setEnabled(false);
+            }
+        }
     }
 
     public int getAid() {
@@ -171,8 +185,10 @@ public class AddActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainmenu, menu);
+        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null ) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.mainmenu, menu);
+        }
         return true;
     }
 
@@ -180,7 +196,9 @@ public class AddActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuLogout:
-                Toast.makeText(this, "Menu Item 1 selected", Toast.LENGTH_SHORT).show();
+                app.getPreferences().removeString(Preferences.KEY_OFFICER_ID);
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
                 break;
         }
         return true;

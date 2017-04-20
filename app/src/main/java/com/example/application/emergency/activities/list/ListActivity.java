@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.LoginActivity;
+import com.example.application.emergency.activities.MainActivity;
 import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.Preferences;
@@ -72,12 +73,16 @@ public class ListActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        Toast.makeText(getApplicationContext(), "คลิกเหตุการณ์ค้างเพื่อแชร์", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.mainmenu, menu);
+        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null ) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.mainmenu, menu);
+        }
         return true;
     }
 
@@ -85,7 +90,9 @@ public class ListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuLogout:
-                Toast.makeText(this, "Menu Item 1 selected", Toast.LENGTH_SHORT).show();
+                app.getPreferences().removeString(Preferences.KEY_OFFICER_ID);
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
                 break;
         }
         return true;

@@ -26,6 +26,7 @@ import com.example.application.emergency.activities.list.ListModel;
 import com.example.application.emergency.activities.list.ListViewAdapter;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
+import com.example.application.emergency.services.Preferences;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -138,6 +139,11 @@ public class ImagesFragment extends Fragment {
                 }
             }
         });
+
+        if (aid != -1 && app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
+            imageViewCamera.setVisibility(View.INVISIBLE);
+            imageViewAlbum.setVisibility(View.INVISIBLE);
+        }
 
         return v;
     }

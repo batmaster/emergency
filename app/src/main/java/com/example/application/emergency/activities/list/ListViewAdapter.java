@@ -4,15 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.services.ReadableTime;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 
 import java.util.ArrayList;
 
@@ -69,6 +73,27 @@ public class ListViewAdapter extends BaseAdapter {
                 Intent intent = new Intent(activity.getApplicationContext(), AddActivity.class);
                 intent.putExtra("aid", list.get(i).getId());
                 activity.startActivity(intent);
+            }
+        });
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                ShareDialog shareDialog = new ShareDialog(activity);
+
+                if (shareDialog.canShow(ShareLinkContent.class)) {
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse("http://batmasterio.com:8888/emergency.php?id=" + list.get(i).getId()))
+                            .build();
+
+                    shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+                }
+                else {
+                    Toast.makeText(context, "ไม่สามารถแชร์ได้", Toast.LENGTH_SHORT).show();
+                }
+
+
+                return true;
             }
         });
 
