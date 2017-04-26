@@ -1,6 +1,7 @@
 package com.example.application.emergency.activities.add;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,10 +28,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -111,48 +114,121 @@ public class AddActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String title = detailFragment.getEditTextTitle().getText().toString();
-                String detail = detailFragment.getEditTextDetail().getText().toString();
-                int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
-                double locationX = detailFragment.getMarker().getPosition().longitude;
-                double locationY = detailFragment.getMarker().getPosition().latitude;
-                final ArrayList<Uri> imageUris = imagesFragment.getImageUris();
+                if (aid == -1) {
+                    final Dialog dialog = new Dialog(AddActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.dialog_number);
+                    dialog.setCancelable(true);
 
-                String peopleId = app.getPreferences().getString(Preferences.KEY_OFFICER_ID);
-                if (peopleId == null) {
-                    TelephonyManager tManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-                    peopleId = tManager.getDeviceId();
+                    final EditText editTextPhone = (EditText) dialog.findViewById(R.id.editTextPhone);
+                    String phone = app.getPreferences().getString(Preferences.KEY_PHONE);
+                    if (phone == null || phone.equals("")) {
+                        phone = app.getPhoneNumber();
+                    }
+                    editTextPhone.setText(phone);
+
+                    Button buttonCancel = (Button) dialog.findViewById(R.id.buttonCancel);
+                    buttonCancel.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    Button buttonOK = (Button) dialog.findViewById(R.id.buttonOK);
+                    buttonOK.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "กำลังเพิ่มเหตุการณ์", Toast.LENGTH_SHORT).show();
+
+                            String title = detailFragment.getEditTextTitle().getText().toString();
+                            String detail = detailFragment.getEditTextDetail().getText().toString();
+                            int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
+                            double locationX = detailFragment.getMarker().getPosition().latitude;
+                            double locationY = detailFragment.getMarker().getPosition().longitude;
+                            final ArrayList<Uri> imageUris = imagesFragment.getImageUris();
+
+                            String phone = editTextPhone.getText().toString();
+                            app.getPreferences().putString(Preferences.KEY_PHONE, phone);
+
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("function", "add_accident");
+                            params.put("title", title);
+                            params.put("detail", detail);
+                            params.put("type_id", String.valueOf(typeId));
+                            params.put("location_x", String.valueOf(locationX));
+                            params.put("location_y", String.valueOf(locationY));
+                            params.put("phone", phone);
+
+                            app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+                                @Override
+                                public void onResponse(boolean success, Throwable error, JSONObject data) {
+                                    if (data != null) {
+                                        try {
+                                            String id = data.getString("id");
+                                            app.getHttpService().upload(imageUris, id);
+
+                                            Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            finish();
+
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+
+                        }
+                    });
+
+                    dialog.show();
                 }
+                else {
+                    Toast.makeText(getApplicationContext(), "กำลังอัพเดตเหตุการณ์", Toast.LENGTH_SHORT).show();
 
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("function", "add_accident");
-                params.put("title", title);
-                params.put("detail", detail);
-                params.put("type_id", String.valueOf(typeId));
-                params.put("location_x", String.valueOf(locationX));
-                params.put("location_y", String.valueOf(locationY));
-                params.put("people_id", peopleId);
+                    String title = detailFragment.getEditTextTitle().getText().toString();
+                    String detail = detailFragment.getEditTextDetail().getText().toString();
+                    int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
+                    int status = detailFragment.getSpinnerStatus().getSelectedItemPosition();
+                    double locationX = detailFragment.getMarker().getPosition().latitude;
+                    double locationY = detailFragment.getMarker().getPosition().longitude;
+                    final ArrayList<Uri> imageUris = imagesFragment.getImageUris();
 
-                app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
-                    @Override
-                    public void onResponse(boolean success, Throwable error, JSONObject data) {
-                        if (data != null) {
-                            try {
-                                String id = data.getString("id");
-                                app.getHttpService().upload(imageUris, id);
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    params.put("function", "edit_accident");
+                    params.put("aid", String.valueOf(aid));
+                    params.put("title", title);
+                    params.put("detail", detail);
+                    params.put("type_id", String.valueOf(typeId));
+                    params.put("location_x", String.valueOf(locationX));
+                    params.put("location_y", String.valueOf(locationY));
+                    params.put("status", String.valueOf(status));
 
-                                startActivity(new Intent(getApplicationContext(), ListActivity.class));
-                                finish();
+                    app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+                        @Override
+                        public void onResponse(boolean success, Throwable error, JSONObject data) {
+                            if (data != null) {
+                                try {
+                                    String id = data.getString("id");
+                                    app.getHttpService().upload(imageUris, id);
+
+                                    Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                    finish();
 
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
-                    }
-                });
-
-//                app.getHttpService().upload(imageUris);
+                    });
+                }
 
             }
         });
@@ -160,14 +236,6 @@ public class AddActivity extends AppCompatActivity {
 
         if (aid != -1) {
             buttonAdd.setText("อัพเดต");
-
-            if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
-                // TODO
-                buttonAdd.setEnabled(false);
-            }
-            else {
-                buttonAdd.setEnabled(false);
-            }
         }
     }
 
@@ -184,19 +252,36 @@ public class AddActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null ) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.mainmenu, menu);
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (app.getPreferences().getString(Preferences.KEY_PHONE) == null ) {
+            menu.removeItem(R.id.menuClear);
         }
+        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null ) {
+            menu.removeItem(R.id.menuLogout);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menuClear:
+                app.getPreferences().removeString(Preferences.KEY_PHONE);
+                Toast.makeText(getApplicationContext(), "ลบหมายเลขโทรศัพท์เรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
+                invalidateOptionsMenu();
+                break;
             case R.id.menuLogout:
                 app.getPreferences().removeString(Preferences.KEY_OFFICER_ID);
+                app.getPreferences().removeString(Preferences.KEY_PHONE);
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
                 break;

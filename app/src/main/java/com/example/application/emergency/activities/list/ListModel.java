@@ -5,6 +5,7 @@ public class ListModel {
     private int typeId;
     private String type;
     private String title;
+    private String phone;
     private String detail;
     private double locationX;
     private double locationY;
@@ -14,11 +15,12 @@ public class ListModel {
 
     private String color;
 
-    public ListModel(int id, int typeId, String type, String title, String detail, double locationX, double locationY, int status, String date, String approveDate, String color) {
+    public ListModel(int id, int typeId, String type, String title, String phone, String detail, double locationX, double locationY, int status, String date, String approveDate, String color) {
         this.id = id;
         this.typeId = typeId;
         this.type = type;
         this.title = title;
+        this.phone = phone;
         this.detail = detail;
         this.locationX = locationX;
         this.locationY = locationY;
@@ -58,6 +60,14 @@ public class ListModel {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getDetail() {

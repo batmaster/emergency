@@ -140,10 +140,10 @@ public class ImagesFragment extends Fragment {
             }
         });
 
-        if (aid != -1 && app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
-            imageViewCamera.setVisibility(View.INVISIBLE);
-            imageViewAlbum.setVisibility(View.INVISIBLE);
-        }
+//        if (aid != -1 && app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
+//            imageViewCamera.setVisibility(View.INVISIBLE);
+//            imageViewAlbum.setVisibility(View.INVISIBLE);
+//        }
 
         return v;
     }

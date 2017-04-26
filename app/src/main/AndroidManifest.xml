@@ -48,7 +48,8 @@
         <activity android:name=".insert_em" />
         <activity android:name=".acc" />
         <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.list.ListActivity" >
+        <activity
+            android:name=".activities.list.ListActivity" >
         </activity>
         <activity android:name=".activities.add.AddActivity">
 

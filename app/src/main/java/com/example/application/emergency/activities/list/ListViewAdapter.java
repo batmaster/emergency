@@ -62,6 +62,9 @@ public class ListViewAdapter extends BaseAdapter {
         TextView textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
         textViewTitle.setText(list.get(i).getTitle());
 
+        TextView textViewPhone = (TextView) view.findViewById(R.id.textViewPhone);
+        textViewPhone.setText(list.get(i).getPhone());
+
         TextView textViewTime = (TextView) view.findViewById(R.id.textViewTime);
         textViewTime.setText(ReadableTime.get(list.get(i).getDate()));
 

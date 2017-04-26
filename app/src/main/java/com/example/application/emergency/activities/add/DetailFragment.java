@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -149,30 +150,18 @@ public class DetailFragment extends Fragment {
                             }
                         }
                     });
+
+                    googleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+                        @Override
+                        public void onMyLocationChange(Location location) {
+                            final LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
+                            marker = googleMap.addMarker(new MarkerOptions().position(ll).title("สถานที่เกิดเหตุ"));
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, 17f), 1000, null);
+                            googleMap.setOnMyLocationChangeListener(null);
+                        }
+                    });
                 }
             });
-
-            int a = 2;
-            try {
-                PackageInfo info = getActivity().getPackageManager().getPackageInfo(
-                        "com.example.application.emergency",
-                        PackageManager.GET_SIGNATURES);
-                for (Signature signature : info.signatures) {
-                    MessageDigest md = MessageDigest.getInstance("SHA");
-                    md.update(signature.toByteArray());
-                    Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-                    editTextDetail.setText(Base64.encodeToString(md.digest(), Base64.DEFAULT));
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-            int b = 2;
         }
         else {
             HashMap<String, String> params2 = new HashMap<String, String>();
@@ -237,25 +226,23 @@ public class DetailFragment extends Fragment {
                                         return;
                                     }
 
-                                    if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
-                                        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                                            @Override
-                                            public void onMapClick(LatLng latLng) {
-                                                Toast.makeText(getActivity().getApplicationContext(), "คลิกตำแหน่งค้างเพื่อแก้ไขตำแหน่ง", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                    googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                                        @Override
+                                        public void onMapClick(LatLng latLng) {
+                                            Toast.makeText(getActivity().getApplicationContext(), "คลิกตำแหน่งค้างเพื่อแก้ไขตำแหน่ง", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
 
-                                        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-                                            @Override
-                                            public void onMapLongClick(LatLng latLng) {
-                                                if (marker != null) {
-                                                    marker.setPosition(latLng);
-                                                } else {
-                                                    marker = googleMap.addMarker(new MarkerOptions().position(latLng).title("สถานที่เกิดเหตุ"));
-                                                }
+                                    googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                                        @Override
+                                        public void onMapLongClick(LatLng latLng) {
+                                            if (marker != null) {
+                                                marker.setPosition(latLng);
+                                            } else {
+                                                marker = googleMap.addMarker(new MarkerOptions().position(latLng).title("สถานที่เกิดเหตุ"));
                                             }
-                                        });
-                                    }
+                                        }
+                                    });
 
                                     if (marker != null) {
                                         marker = null;
@@ -274,9 +261,9 @@ public class DetailFragment extends Fragment {
             });
 
             if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
-                editTextTitle.setInputType(InputType.TYPE_NULL);
-                editTextDetail.setInputType(InputType.TYPE_NULL);
-                spinner.setEnabled(false);
+//                editTextTitle.setInputType(InputType.TYPE_NULL);
+//                editTextDetail.setInputType(InputType.TYPE_NULL);
+//                spinner.setEnabled(false);
                 spinnerStatus.setEnabled(false);
             }
         }

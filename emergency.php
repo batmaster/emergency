@@ -75,16 +75,17 @@
         /******************** #accident ********************/
         else if ($function == "get_accidents") {
             $status = $_POST["status"];
+            $phone = $_POST["phone"];
 
-            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.detail, a.location_x, a.location_y, a.status, a.date, a.approve_date, at.color
+            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.phone, a.detail, a.location_x, a.location_y, a.status, a.date, a.approve_date, at.color
                 FROM accident a, accident_type at
-                WHERE a.type_id = at.id AND a.status = $status
-                ORDER BY DATE(date) DESC"));
+                WHERE a.type_id = at.id AND a.status = $status AND a.phone LIKE '%$phone%'
+                ORDER BY a.date DESC"));
         }
         else if ($function == "get_accident") {
             $aid = $_POST["aid"];
 
-            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.detail, a.location_x, a.location_y, a.status, a.date, a.approve_date, at.color
+            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.phone, a.detail, a.location_x, a.location_y, a.status, a.date, a.approve_date, at.color
                 FROM accident a, accident_type at
                 WHERE a.type_id = at.id AND a.id = $aid"));
         }
@@ -101,11 +102,25 @@
             $type_id = $_POST["type_id"];
             $location_x = $_POST["location_x"];
             $location_y = $_POST["location_y"];
-            $people_id = $_POST["people_id"];
+            $phone = $_POST["phone"];
 
-            sql("INSERT INTO accident (type_id, title, people_id, detail, location_x, location_y, date) VALUES ($type_id, '$title', '$people_id', '$detail', '$location_x', '$location_y', NOW())");
+            sql("INSERT INTO accident (type_id, title, phone, detail, location_x, location_y, date) VALUES ($type_id, '$title', '$phone', '$detail', '$location_x', '$location_y', NOW())");
 
-            echo json_encode(sql("SELECT id FROM accident WHERE people_id = '$people_id' AND title = '$title' AND location_x = '$location_x' AND location_y = '$location_y' ORDER BY id DESC LIMIT 1", false));
+            echo json_encode(sql("SELECT id FROM accident WHERE phone = '$phone' AND title = '$title' AND location_x = '$location_x' AND location_y = '$location_y' ORDER BY id DESC LIMIT 1", false));
+
+        }
+        else if ($function == "edit_accident") {
+            $aid = $_POST["aid"];
+            $title = $_POST["title"];
+            $detail = $_POST["detail"];
+            $type_id = $_POST["type_id"];
+            $location_x = $_POST["location_x"];
+            $location_y = $_POST["location_y"];
+            $status = $_POST["status"];
+
+            sql("UPDATE accident SET title = '$title', detail = '$detail', type_id = $type_id, status = $status, location_x = '$location_x', location_y = '$location_y' WHERE id = $aid");
+
+            echo json_encode(sql("SELECT id FROM accident WHERE title = '$title' AND location_x = '$location_x' AND location_y = '$location_y' ORDER BY id DESC LIMIT 1", false));
 
         }
         /******************** #files ********************/

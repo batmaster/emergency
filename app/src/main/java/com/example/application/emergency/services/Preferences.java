@@ -16,6 +16,7 @@ public class Preferences {
     private SharedPreferences.Editor editor;
 
     public static final String KEY_OFFICER_ID = "KEY_OFFICER_ID";
+    public static final String KEY_PHONE = "KEY_PHONE";
 
     public Preferences(Context context) {
         sp = context.getSharedPreferences("emergency", Context.MODE_PRIVATE);

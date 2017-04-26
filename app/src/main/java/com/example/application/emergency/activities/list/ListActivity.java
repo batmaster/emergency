@@ -78,19 +78,39 @@ public class ListActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null ) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.mainmenu, menu);
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (app.getPreferences().getString(Preferences.KEY_PHONE) == null ) {
+            menu.removeItem(R.id.menuClear);
         }
+        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null ) {
+            menu.removeItem(R.id.menuLogout);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menuClear:
+                app.getPreferences().removeString(Preferences.KEY_PHONE);
+                Toast.makeText(getApplicationContext(), "ลบหมายเลขโทรศัพท์เรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
+                invalidateOptionsMenu();
+
+                finish();
+                startActivity(new Intent(getApplicationContext(), ListActivity.class));
+                break;
             case R.id.menuLogout:
                 app.getPreferences().removeString(Preferences.KEY_OFFICER_ID);
+                app.getPreferences().removeString(Preferences.KEY_PHONE);
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
                 break;
