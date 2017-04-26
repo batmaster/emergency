@@ -38,4 +38,6 @@ dependencies {
 
     compile 'com.facebook.android:facebook-android-sdk:4.+'
 
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+
 }

@@ -46,9 +46,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0px"
+        android:layout_weight="10"
         android:paddingLeft="32px"
-        android:paddingRight="32px"
-        android:layout_weight="10">
+        android:paddingRight="32px">
 
         <Button
             android:id="@+id/buttonAdd"

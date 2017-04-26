@@ -89,6 +89,7 @@ public class AddActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(2);
         pagerAdapter = new AddPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -196,11 +197,16 @@ public class AddActivity extends AppCompatActivity {
                     double locationX = detailFragment.getMarker().getPosition().latitude;
                     double locationY = detailFragment.getMarker().getPosition().longitude;
                     final ArrayList<Uri> imageUris = imagesFragment.getImageUris();
+                    String officerId = app.getPreferences().getString(Preferences.KEY_OFFICER_ID);
+                    if (officerId == null) {
+                        officerId = "";
+                    }
 
                     HashMap<String, String> params = new HashMap<String, String>();
                     params.put("function", "edit_accident");
                     params.put("aid", String.valueOf(aid));
-                    params.put("title", title);
+                    params.put("officer_id", officerId);
+                    params.put("status", String.valueOf(status));
                     params.put("detail", detail);
                     params.put("type_id", String.valueOf(typeId));
                     params.put("location_x", String.valueOf(locationX));

@@ -11,11 +11,10 @@ public class ListModel {
     private double locationY;
     private int status;
     private String date;
-    private String approveDate;
 
     private String color;
 
-    public ListModel(int id, int typeId, String type, String title, String phone, String detail, double locationX, double locationY, int status, String date, String approveDate, String color) {
+    public ListModel(int id, int typeId, String type, String title, String phone, String detail, double locationX, double locationY, int status, String date, String color) {
         this.id = id;
         this.typeId = typeId;
         this.type = type;
@@ -26,7 +25,6 @@ public class ListModel {
         this.locationY = locationY;
         this.status = status;
         this.date = date;
-        this.approveDate = approveDate;
         this.color = color;
     }
 
@@ -108,14 +106,6 @@ public class ListModel {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public String getApproveDate() {
-        return approveDate;
-    }
-
-    public void setApproveDate(String approveDate) {
-        this.approveDate = approveDate;
     }
 
     public String getColor() {

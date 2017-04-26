@@ -97,7 +97,6 @@ public class ListFragment extends Fragment {
                                     o.getDouble("location_y"),
                                     o.getInt("status"),
                                     o.getString("date"),
-                                    o.getString("approve_date"),
                                     o.getString("color")
                             ));
                         }

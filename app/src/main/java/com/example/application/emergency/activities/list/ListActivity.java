@@ -1,6 +1,7 @@
 package com.example.application.emergency.activities.list;
 
 import android.content.Intent;
+import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.PagerAdapter;
@@ -31,6 +32,7 @@ public class ListActivity extends AppCompatActivity {
     private EmergencyApplication app;
 
     private TabLayout tabLayout;
+    private TabItem tabSummary;
     private ViewPager viewPager;
 
     private Button buttonAdd;
@@ -45,6 +47,7 @@ public class ListActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(4);
         final PagerAdapter pagerAdapter = new ListPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -62,6 +65,14 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
+            }
+        });
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
+                    tabLayout.removeTabAt(3);
+                }
             }
         });
 
