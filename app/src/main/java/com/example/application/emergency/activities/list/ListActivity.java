@@ -117,4 +117,12 @@ public class ListActivity extends AppCompatActivity {
         }
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }
+        finish();
+    }
 }

@@ -297,4 +297,10 @@ public class AddActivity extends AppCompatActivity {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getApplicationContext(), ListActivity.class));
+        finish();
+    }
 }
