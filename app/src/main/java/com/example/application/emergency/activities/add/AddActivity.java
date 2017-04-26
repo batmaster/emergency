@@ -1,60 +1,28 @@
 package com.example.application.emergency.activities.add;
 
-import android.Manifest;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.MainActivity;
 import com.example.application.emergency.activities.list.ListActivity;
-import com.example.application.emergency.activities.list.ListPagerAdapter;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,8 +30,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * class แสดงผล activity หน้าเพิ่มการแจ้งเหตุ
+ */
 public class AddActivity extends AppCompatActivity {
 
+    /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private EmergencyApplication app;
 
     private DetailFragment detailFragment;
@@ -84,8 +56,10 @@ public class AddActivity extends AppCompatActivity {
 
         app = (EmergencyApplication) getApplication();
 
+        /** ดึงค่า accident id เพื่อตรวจสอบว่า หน้านี้ถูกเปิดโดยการกดปุ่ม เพิ่ม หรือคลิกที่รายการการแจ้งเหตุ **/
         aid = getIntent().getIntExtra("aid", -1);
 
+        /** ตั้งค่า component **/
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -151,6 +125,7 @@ public class AddActivity extends AppCompatActivity {
                             String phone = editTextPhone.getText().toString();
                             app.getPreferences().putString(Preferences.KEY_PHONE, phone);
 
+                            /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
                             HashMap<String, String> params = new HashMap<String, String>();
                             params.put("function", "add_accident");
                             params.put("title", title);
@@ -181,7 +156,6 @@ public class AddActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
                         }
                     });
 
@@ -202,6 +176,7 @@ public class AddActivity extends AppCompatActivity {
                         officerId = "";
                     }
 
+                    /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
                     HashMap<String, String> params = new HashMap<String, String>();
                     params.put("function", "edit_accident");
                     params.put("aid", String.valueOf(aid));
@@ -239,7 +214,7 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-
+        /** เปลี่ยนข้อความบนปุ่ม เพิ่ม เป็น อัพเดต หากหน้านี้ถูกเรียกโดยการคลิกรายการการแจ้งเหตุ **/
         if (aid != -1) {
             buttonAdd.setText("อัพเดต");
         }
@@ -249,6 +224,7 @@ public class AddActivity extends AppCompatActivity {
         return aid;
     }
 
+    /** ฟังก์ชั่นสำหรับ fragment ตั้งค่าตัวแปรให้ activity **/
     public void setDetailFragment(DetailFragment detailFragment) {
         this.detailFragment = detailFragment;
     }
@@ -257,6 +233,7 @@ public class AddActivity extends AppCompatActivity {
         this.imagesFragment = imagesFragment;
     }
 
+    /** ตั้งค่าปุ่มเมนูในหน้า activity **/
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (app.getPreferences().getString(Preferences.KEY_PHONE) == null ) {
@@ -295,6 +272,7 @@ public class AddActivity extends AppCompatActivity {
         return true;
     }
 
+    /** ฟังก์ชั่นของระบบแอนดรอยด์ สำหรับเรียกใช้หลังการกลับจาก process อื่น **/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -304,6 +282,7 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
+    /** เปลี่ยนหน้า หากกดปุ่ม back บนมือถือแอนดรอยด์ **/
     @Override
     public void onBackPressed() {
         startActivity(new Intent(getApplicationContext(), ListActivity.class));

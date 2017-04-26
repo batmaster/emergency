@@ -1,38 +1,24 @@
 package com.example.application.emergency.activities.add;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.list.ListModel;
-import com.example.application.emergency.activities.list.ListViewAdapter;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
-import com.example.application.emergency.services.Preferences;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,11 +28,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by batmaster on 4/15/2017 AD.
+ * class แสดงผล fragment หน้าแสดงรูปภาพการแจ้งเหตุ
  */
-
 public class ImagesFragment extends Fragment {
 
+    /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private static EmergencyApplication app;
 
     private int aid;
@@ -74,9 +60,11 @@ public class ImagesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         app = (EmergencyApplication) getActivity().getApplication();
 
+        /** ดึงค่า accident id เพื่อตรวจสอบว่า หน้านี้ถูกเปิดโดยการกดปุ่ม เพิ่ม หรือคลิกที่รายการการแจ้งเหตุ **/
         aid = ((AddActivity)getActivity()).getAid();
         ((AddActivity)getActivity()).setImagesFragment(this);
 
+        /** ดึงค่า accident id เพื่อตรวจสอบว่า หน้านี้ถูกเปิดโดยการกดปุ่ม เพิ่ม หรือคลิกที่รายการการแจ้งเหตุ **/
         View v = inflater.inflate(R.layout.fragment_add_images, container, false);
 
         layoutGallery = (LinearLayout) v.findViewById(R.id.layoutGallery);
@@ -85,6 +73,7 @@ public class ImagesFragment extends Fragment {
         imageViewCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /** เปิดแอปกล้อง **/
                 Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 getActivity().startActivityForResult(intent, RESULT_CAMERA);
             }
@@ -94,7 +83,7 @@ public class ImagesFragment extends Fragment {
         imageViewAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                /** เปิดแอปอัลบัมภาพ **/
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -106,6 +95,8 @@ public class ImagesFragment extends Fragment {
         imageUris = new ArrayList<Uri>();
 
         imageView = (ImageView) v.findViewById(R.id.imageView);
+
+        /** เปิดแอปอัลบัมภาพ **/
 
         HashMap<String, String> params2 = new HashMap<String, String>();
         params2.put("function", "get_images");
@@ -131,7 +122,6 @@ public class ImagesFragment extends Fragment {
 
                             Glide.with(getContext()).load(imageUri).centerCrop().into(im);
                             Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
-
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -140,25 +130,21 @@ public class ImagesFragment extends Fragment {
             }
         });
 
-//        if (aid != -1 && app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
-//            imageViewCamera.setVisibility(View.INVISIBLE);
-//            imageViewAlbum.setVisibility(View.INVISIBLE);
-//        }
-
         return v;
     }
 
+    /** ฟังก์ชั่นสำหรับเรียกใช้ตัวแปรใน class **/
     public ArrayList<Uri> getImageUris() {
         return imageUris;
     }
 
+    /** ฟังก์ชั่นของระบบแอนดรอยด์ สำหรับเรียกใช้หลังการกลับจาก process อื่น **/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        /** ถ้าเป็นการกลับจากกล้องหรืออัลบัม ให้เอาภาพมาแสดง และใส่ไว้ในรายการในตัวแปร **/
         if (resultCode == Activity.RESULT_OK && data != null) {
-
-
             if (requestCode == RESULT_CAMERA || requestCode == RESULT_GALLERY) {
                 Uri imageUri = data.getData();
 
@@ -173,6 +159,7 @@ public class ImagesFragment extends Fragment {
         }
     }
 
+    /** ฟังก์ชั่นสำหรับสร้าง component พร้อมรูปภาพมาแสดง **/
     private ImageView getImageView(final Uri imageUri) {
         Resources r = getResources();
         int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 110, r.getDisplayMetrics());
@@ -191,5 +178,4 @@ public class ImagesFragment extends Fragment {
 
         return i;
     }
-
 }

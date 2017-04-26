@@ -4,19 +4,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
-import com.android.volley.request.MultiPartRequest;
 import com.android.volley.request.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -31,13 +26,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * class สำหรับฟังก์ชั่นที่ใช้ติดต่อสื่อสารกับ server
+ */
 public class HTTPService {
 
+    /** ประกาศตัวแปร **/
     private Context context;
     private RequestQueue queue;
     private String BASE_URL = "http://188.166.180.204:8888/emergency.php";
@@ -47,6 +44,7 @@ public class HTTPService {
         queue = Volley.newRequestQueue(context);
     }
 
+    /** ฟังก์ชั่นสำหรับเรียกอัพโหลดไฟล์ภาพ **/
     public void upload(ArrayList<Uri> files, String aid) {
         for (int i = 0; i < files.size(); i++) {
             upload(files.get(i), aid);
@@ -54,6 +52,7 @@ public class HTTPService {
 
     }
 
+    /** ฟังก์ชั่นอัพโหลดไฟล์ภาพขึ้น server **/
     private void upload(final Uri uri, final String aid) {
         new AsyncTask<String, String, String>() {
 
@@ -95,8 +94,7 @@ public class HTTPService {
 
                         DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
                         outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                        outputStream.writeBytes(
-                                "Content-Disposition: form-data; name=\"filUpload\";filename=\"" + newName + "\"" + lineEnd);
+                        outputStream.writeBytes("Content-Disposition: form-data; name=\"filUpload\";filename=\"" + newName + "\"" + lineEnd);
                         outputStream.writeBytes(lineEnd);
 
                         bytesAvailable = fileInputStream.available();
@@ -130,7 +128,6 @@ public class HTTPService {
                             bos.close();
 
                             resMessage = new String(result);
-
                         }
                         else {
                             upload(uri, aid);
@@ -140,15 +137,11 @@ public class HTTPService {
                         outputStream.flush();
                         outputStream.close();
 
-
                     } catch (Exception ex) {
                         // Exception handling
                     }
 
-
                 } catch (Exception ex) {
-                    // dialog.dismiss();
-
                     ex.printStackTrace();
                 }
                 return "";
@@ -157,18 +150,16 @@ public class HTTPService {
             @Override
             protected void onProgressUpdate(String... values) {
                 super.onProgressUpdate(values);
-
-                Log.d("upload onProgressUpdate", getRealPathFromUri(context, uri) + " " + values.toString());
             }
 
         }.execute();
     }
 
+    /** ฟังก์ชั่นสำหรับเรียกใช้ ฟังก์ชั่นที่อยู่บน server **/
     public void callPHP(HashMap<String, String> params, final OnResponseCallback<JSONObject> responseCallback) {
         Log.d("HTTP", params.toString());
 
         StringRequest request = new StringRequest(Request.Method.POST, BASE_URL, new Response.Listener<String>() {
-
             @Override
             public void onResponse(String s) {
                 Log.d("HTTP", "onResponse " + s);
@@ -196,7 +187,6 @@ public class HTTPService {
         request.setParams(params);
         queue.add(request);
     }
-
 
     public interface OnResponseCallback<T> {
         void onResponse(boolean success, Throwable error, T data);

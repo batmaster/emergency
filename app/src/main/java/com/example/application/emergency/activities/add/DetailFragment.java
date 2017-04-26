@@ -1,31 +1,21 @@
 package com.example.application.emergency.activities.add;
 
 import android.Manifest;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.application.emergency.R;
-import com.example.application.emergency.activities.list.ListModel;
-import com.example.application.emergency.activities.list.ListViewAdapter;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
@@ -41,17 +31,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by batmaster on 4/15/2017 AD.
+ * class แสดงผล fragment หน้าแสดงรายระเอียดรายการแจ้งเหตุ
  */
-
 public class DetailFragment extends Fragment {
 
+    /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private static EmergencyApplication app;
 
     private int aid;
@@ -80,9 +68,11 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         app = (EmergencyApplication) getActivity().getApplication();
 
+        /** ดึงค่า accident id เพื่อตรวจสอบว่า หน้านี้ถูกเปิดโดยการกดปุ่ม เพิ่ม หรือคลิกที่รายการการแจ้งเหตุ **/
         aid = ((AddActivity)getActivity()).getAid();
         ((AddActivity)getActivity()).setDetailFragment(this);
 
+        /** ตั้งค่า component **/
         View v = inflater.inflate(R.layout.fragment_add_detail, container, false);
 
         editTextTitle = (EditText) v.findViewById(R.id.editTextTitle);
@@ -96,10 +86,11 @@ public class DetailFragment extends Fragment {
 
         mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
 
-
+        /** ซ่่อน component ที่ไม่ได้ใช้งาน ขณะผู้ใช้เพิ่มรายการใหม่ **/
         if (aid == -1) {
             layoutStatus.setVisibility(View.GONE);
 
+            /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
             HashMap<String, String> params = new HashMap<String, String>();
             params.put("function", "get_accident_types");
             app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
@@ -128,6 +119,7 @@ public class DetailFragment extends Fragment {
                 }
             });
 
+            /** ตั้งค่าแผนที่ และตำแหน่งปัจจุบัน **/
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(final GoogleMap googleMap) {
@@ -163,7 +155,9 @@ public class DetailFragment extends Fragment {
                 }
             });
         }
+        /** ซ่่อน component ที่ไม่ได้ใช้งาน หากเป็นการแก้ไขรายการ **/
         else {
+            /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
             HashMap<String, String> params2 = new HashMap<String, String>();
             params2.put("function", "get_accident");
             params2.put("aid", String.valueOf(aid));
@@ -179,6 +173,7 @@ public class DetailFragment extends Fragment {
                             editTextDetail.setText(o.getString("detail"));
                             spinnerStatus.setSelection(o.getInt("status"));
 
+                            /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
                             HashMap<String, String> params = new HashMap<String, String>();
                             params.put("function", "get_accident_types");
                             app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
@@ -214,7 +209,9 @@ public class DetailFragment extends Fragment {
                                 }
                             });
 
+                            /** อ่านตำแหน่งจากการแจ้งเหตุ **/
                             final LatLng ll = new LatLng(o.getDouble("location_x"), o.getDouble("location_y"));
+                            /** ตั้งค่าแผนที่ และตำแหน่งในการแจ้งเหตุ **/
                             mapFragment.getMapAsync(new OnMapReadyCallback() {
                                 @Override
                                 public void onMapReady(final GoogleMap googleMap) {
@@ -260,10 +257,8 @@ public class DetailFragment extends Fragment {
                 }
             });
 
+            /** ซ่อน component สถานะ หากไม่ใช่เจ้าหน้าที่ **/
             if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
-//                editTextTitle.setInputType(InputType.TYPE_NULL);
-//                editTextDetail.setInputType(InputType.TYPE_NULL);
-//                spinner.setEnabled(false);
                 spinnerStatus.setEnabled(false);
             }
         }
@@ -271,7 +266,7 @@ public class DetailFragment extends Fragment {
         return v;
     }
 
-
+    /** ฟังก์ชั่นสำหรับเรียกใช้ตัวแปรใน class **/
     public EditText getEditTextDetail() {
         return editTextDetail;
     }

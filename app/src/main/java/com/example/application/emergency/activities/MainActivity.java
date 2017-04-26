@@ -19,8 +19,12 @@ import com.example.application.emergency.activities.list.ListActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.Preferences;
 
+/**
+ * class แสดงผล activity หน้าแรก
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private EmergencyApplication app;
 
     private Button buttonAdd;
@@ -34,12 +38,14 @@ public class MainActivity extends AppCompatActivity {
 
         app = (EmergencyApplication) getApplication();
 
+        /** เปลี่ยนหน้าไปหน้า list หากมีบันทึก id ของ officer ไว้ **/
         if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
             Intent intent = new Intent(getApplicationContext(), ListActivity.class);
             startActivity(intent);
             finish();
         }
 
+        /** ตั้งค่า component **/
         buttonAdd = (Button) findViewById(R.id.buttonAdd);
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,12 +78,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
-
-
+    /** ฟังก์ชั่นของระบบแอนดรอยด์ สำหรับเรียกใช้หลังการกลับจาก process อื่น **/
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (requestCode == 199) {
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /** ฟังก์ชั่นสำหรับตรวจสอบการอนุญาติใช้งาน กล้อง ตำแหน่งปัจจุบัน การเขียนอ่านไฟล์ลงในเครื่อง การอ่านข้อมูลโทรศัพท์ **/
     private boolean checkPermission() {
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -121,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /** ฟังก์ชั่นสำหรับเปลี่ยนหน้าให้ผู้ใช้กดอนุญาติการให้ใช้งาน หากยังไม่ได้อนุญาติ **/
     private void goToSettings() {
         Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
         myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
@@ -128,5 +133,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(myAppSettings);
         finish();
     }
-
 }

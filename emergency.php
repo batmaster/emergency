@@ -70,7 +70,7 @@
         /******************** #accident type ********************/
         else if ($function == "get_accident_types") {
 
-            echo json_encode(sql("SELECT id, title, color FROM accident_type"));
+            echo json_encode(sql("SELECT at.id, at.title, at.color, (SELECT COUNT(*) FROM accident a WHERE a.type_id = at.id) amount FROM accident_type at"));
         }
         /******************** #accident ********************/
         else if ($function == "get_accidents") {

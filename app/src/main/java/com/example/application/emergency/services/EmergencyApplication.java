@@ -3,8 +3,12 @@ package com.example.application.emergency.services;
 import android.app.Application;
 import android.telephony.TelephonyManager;
 
+/**
+ * class จากระบบแอนดรอยด์ สำหรับบรรจุตัวแปรที่ใช้บ่อยในแอปพลิเคชั่น
+ */
 public class EmergencyApplication extends Application {
 
+    /** ประกาศตัวแปร **/
     private HTTPService httpService;
     private Preferences preferences;
 
@@ -20,6 +24,7 @@ public class EmergencyApplication extends Application {
         tm = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
     }
 
+    /** ฟังก์ชั่นสำหรับเรียกใช้ตัวแปรใน class **/
     public HTTPService getHttpService() {
         return httpService;
     }
@@ -30,9 +35,5 @@ public class EmergencyApplication extends Application {
 
     public String getPhoneNumber() {
         return tm.getLine1Number();
-    }
-
-    public String getUUID() {
-        return tm.getDeviceId();
     }
 }

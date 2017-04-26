@@ -1,6 +1,11 @@
 package com.example.application.emergency.activities.list;
 
+/**
+ * class สำหรับบรรจุข้อมูลรายการการแจ้งเตือนที่ดาวน์โหลดมาจาก server
+ */
 public class ListModel {
+
+    /** ประกาศตัวแปร **/
     private int id;
     private int typeId;
     private String type;
@@ -28,6 +33,7 @@ public class ListModel {
         this.color = color;
     }
 
+    /** ฟังก์ชั่นสำหรับเรียกใช้ตัวแปรใน class **/
     public int getId() {
         return id;
     }

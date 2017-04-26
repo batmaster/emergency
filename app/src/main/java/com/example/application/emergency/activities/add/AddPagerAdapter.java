@@ -4,14 +4,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.example.application.emergency.activities.list.ListFragment;
-
 /**
- * Created by batmaster on 4/15/2017 AD.
+ * class สำหรับการนำ fragment มาแสดงในหน้า AddActivity
  */
-
 public class AddPagerAdapter extends FragmentStatePagerAdapter {
-    int mNumOfTabs;
+
+    private int mNumOfTabs;
 
     public AddPagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);

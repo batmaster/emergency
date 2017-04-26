@@ -7,9 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by batmaster on 4/16/2017 AD.
+ * class สำหรับฟังก์ชั่นที่ใช้แปลงค่าวันที่เวลา เป็นค่าความห่างจากปัจจุบัน
  */
-
 public class ReadableTime {
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -68,5 +67,4 @@ public class ReadableTime {
 
         return rt;
     }
-
 }

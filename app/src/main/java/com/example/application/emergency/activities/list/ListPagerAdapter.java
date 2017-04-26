@@ -5,11 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 /**
- * Created by batmaster on 4/15/2017 AD.
+ * class สำหรับการนำ fragment มาแสดงในหน้า ListActivity
  */
-
 public class ListPagerAdapter extends FragmentStatePagerAdapter {
-    int mNumOfTabs;
+
+    private int mNumOfTabs;
 
     public ListPagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);

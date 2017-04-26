@@ -1,11 +1,8 @@
 package com.example.application.emergency.activities.list;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.SparseArray;
@@ -15,29 +12,22 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.application.emergency.R;
-import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
-import com.example.application.emergency.services.Preferences;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
-import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import org.json.JSONArray;
@@ -50,14 +40,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 /**
- * Created by batmaster on 4/15/2017 AD.
+ * class แสดงผล fragment หน้าสรุปผล
  */
-
 public class SummaryFragment extends Fragment {
 
+    /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private static EmergencyApplication app;
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy MMMM");
@@ -78,6 +67,7 @@ public class SummaryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         app = (EmergencyApplication) getActivity().getApplication();
 
+        /** ตั้งค่า component **/
         View v = inflater.inflate(R.layout.fragment_summary, container, false);
 
         final Dialog dialog = new Dialog(getActivity());
@@ -105,8 +95,6 @@ public class SummaryFragment extends Fragment {
             }
         });
 
-
-
         datePicker = (DatePicker) dialog.findViewById(R.id.datePicker);
         datePicker.findViewById(Resources.getSystem().getIdentifier("day", "id", "android")).setVisibility(View.GONE);
         datePicker.setMaxDate(new Date().getTime());
@@ -122,21 +110,20 @@ public class SummaryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 dialog.show();
-
-
             }
         });
 
         barChart = (BarChart) v.findViewById(R.id.barChart);
-
         loadChart(calendar);
 
         return v;
     }
 
+    /** ฟังก์ชั่นสำหรับดาวน์โหลดรายการการแจ้งเหตุจาก server **/
     private void loadChart(final Calendar calendar) {
         textViewDate.setText(SDF.format(calendar.getTime()));
 
+        /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("function", "get_accident_types");
         app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
@@ -155,10 +142,11 @@ public class SummaryFragment extends Fragment {
                             JSONObject o = a.getJSONObject(i);
 
                             colors[i] = Color.parseColor(o.getString("color"));
-                            types[i] = o.getString("title");
+                            types[i] = o.getString("amount") + " " + o.getString("title").replace("อุบัติเหตุ", "");
                             typeOrders.put(Integer.parseInt(o.getString("id")), i);
                         }
 
+                        /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("function", "summary_accidents");
                         params.put("date", SQLSDF.format(calendar.getTime()));
@@ -205,6 +193,17 @@ public class SummaryFragment extends Fragment {
                                             @Override
                                             public String getFormattedValue(float value, AxisBase axis) {
                                                 return String.format("%02d", (int) value);
+                                            }
+                                        });
+                                        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                                            @Override
+                                            public void onValueSelected(Entry e, Highlight h) {
+
+                                            }
+
+                                            @Override
+                                            public void onNothingSelected() {
+
                                             }
                                         });
                                         barChart.getDescription().setEnabled(false);

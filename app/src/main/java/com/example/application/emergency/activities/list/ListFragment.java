@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by batmaster on 4/15/2017 AD.
+ * class แสดงผล fragment หน้าแสดงรายการการแจ้งเหตุ
  */
-
 public class ListFragment extends Fragment {
 
+    /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private static EmergencyApplication app;
 
     private int status;
@@ -44,6 +44,7 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         app = (EmergencyApplication) getActivity().getApplication();
 
+        /** ตั้งค่า component **/
         View v = inflater.inflate(R.layout.fragment_list, container, false);
 
         listView = (ListView) v.findViewById(R.id.listView);
@@ -60,7 +61,9 @@ public class ListFragment extends Fragment {
     public static final int LIST_PROGRESSING = 1;
     public static final int LIST_DONE = 2;
 
+    /** ฟังก์ชั่นสำหรับดาวน์โหลดรายการการแจ้งเหตุจาก server **/
     public void loadList() {
+        /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("function", "get_accidents");
         params.put("status", Integer.toString(status));
@@ -74,7 +77,6 @@ public class ListFragment extends Fragment {
             }
             params.put("phone", phone);
         }
-
         app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
             @Override
             public void onResponse(boolean success, Throwable error, JSONObject data) {

@@ -21,11 +21,11 @@ import com.facebook.share.widget.ShareDialog;
 import java.util.ArrayList;
 
 /**
- * Created by batmaster on 4/16/2017 AD.
+ * class สำหรับการนำข้อมูลมาแสดงใน component listview
  */
-
 public class ListViewAdapter extends BaseAdapter {
 
+    /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private Context context;
     private ArrayList<ListModel> list;
     private Activity activity;
@@ -53,6 +53,8 @@ public class ListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
+
+        /** ตั้งค่า component **/
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if(view == null) {
@@ -82,8 +84,8 @@ public class ListViewAdapter extends BaseAdapter {
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                /** แรกแอป Facebook หรือ browser สำหรับใช้แชร์ลิ้งค์ที่ได้จาก server **/
                 ShareDialog shareDialog = new ShareDialog(activity);
-
                 if (shareDialog.canShow(ShareLinkContent.class)) {
                     ShareLinkContent content = new ShareLinkContent.Builder()
                             .setContentUrl(Uri.parse("http://batmasterio.com:8888/emergency.php?id=" + list.get(i).getId()))
@@ -94,7 +96,6 @@ public class ListViewAdapter extends BaseAdapter {
                 else {
                     Toast.makeText(context, "ไม่สามารถแชร์ได้", Toast.LENGTH_SHORT).show();
                 }
-
 
                 return true;
             }
