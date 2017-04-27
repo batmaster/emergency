@@ -43,7 +43,7 @@ public class ListActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(3);
         final PagerAdapter pagerAdapter = new ListPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -61,14 +61,6 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
-            }
-        });
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
-                    tabLayout.removeTabAt(3);
-                }
             }
         });
 
@@ -129,9 +121,7 @@ public class ListActivity extends AppCompatActivity {
     /** เปลี่ยนหน้า หากกดปุ่ม back บนมือถือแอนดรอยด์ **/
     @Override
     public void onBackPressed() {
-        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        }
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
 }

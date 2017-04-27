@@ -26,8 +26,6 @@ public class ListPagerAdapter extends FragmentStatePagerAdapter {
                 return ListFragment.getInstance(ListFragment.LIST_PROGRESSING);
             case 2:
                 return ListFragment.getInstance(ListFragment.LIST_DONE);
-            case 3:
-                return SummaryFragment.getInstance();
             default:
                 return null;
         }
