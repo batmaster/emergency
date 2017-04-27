@@ -89,6 +89,14 @@
                 FROM accident a, accident_type at
                 WHERE a.type_id = at.id AND a.id = $aid"));
         }
+        else if ($function == "remove_accident") {
+            $aid = $_POST["aid"];
+
+            sql("DELETE FROM accident WHERE id = $aid");
+            sql("DELETE FROM accident_image WHERE accident_id = $aid");
+
+            echo json_encode(["ok" => 0]);
+        }
         else if ($function == "get_images") {
             $aid = $_POST["aid"];
 

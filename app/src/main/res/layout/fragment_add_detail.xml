@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="32px" >
-
 
     <TextView
         android:layout_width="match_parent"
@@ -26,42 +25,48 @@
     <EditText
         android:id="@+id/editTextDetail"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="85dp"
         android:maxLength="1024"/>
 
     <TextView
-        android:text="ประเภท"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ประเภท" />
+
+    <Spinner
+        android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner" />
-
     <LinearLayout
-        android:orientation="vertical"
         android:id="@+id/layoutStatus"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
-            android:text="สถานะ"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/status"
-            android:id="@+id/spinnerStatus" />
+            android:text="สถานะ" />
+
+        <Spinner
+            android:id="@+id/spinnerStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/status" />
     </LinearLayout>
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:id="@+id/map"
-        android:layout_marginTop="32px"
+    <Button
+        android:id="@+id/buttonDelete"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:text="ลบรายการ"/>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="32px"/>
 
 </LinearLayout>

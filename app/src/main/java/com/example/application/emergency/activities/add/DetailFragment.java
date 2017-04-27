@@ -1,6 +1,7 @@
 package com.example.application.emergency.activities.add;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -10,12 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.application.emergency.R;
+import com.example.application.emergency.activities.list.ListActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
@@ -50,6 +53,7 @@ public class DetailFragment extends Fragment {
     private ArrayList<Integer> spinnerValue;
     private LinearLayout layoutStatus;
     private Spinner spinnerStatus;
+    private Button buttonDelete;
 
     private MapFragment mapFragment;
 
@@ -84,11 +88,32 @@ public class DetailFragment extends Fragment {
         layoutStatus = (LinearLayout) v.findViewById(R.id.layoutStatus);
         spinnerStatus = (Spinner) v.findViewById(R.id.spinnerStatus);
 
+        buttonDelete = (Button) v.findViewById(R.id.buttonDelete);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("function", "remove_accident");
+                params.put("aid", String.valueOf(aid));
+                app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+                    @Override
+                    public void onResponse(boolean success, Throwable error, JSONObject data) {
+                        if (data != null) {
+                            startActivity(new Intent(getActivity().getApplicationContext(), ListActivity.class));
+                            getActivity().finish();
+                        }
+                    }
+                });
+            }
+        });
+
         mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
 
         /** ซ่่อน component ที่ไม่ได้ใช้งาน ขณะผู้ใช้เพิ่มรายการใหม่ **/
         if (aid == -1) {
             layoutStatus.setVisibility(View.GONE);
+            buttonDelete.setVisibility(View.GONE);
 
             /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
             HashMap<String, String> params = new HashMap<String, String>();
