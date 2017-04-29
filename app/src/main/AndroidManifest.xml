@@ -4,24 +4,21 @@
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true"/>
-
+        android:required="true" />
 
     <application
         android:name=".services.EmergencyApplication"
@@ -30,7 +27,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,38 +34,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".alarm_listActivity" />
-        <activity android:name=".activities.WelcomeActivity" />
-        <activity android:name=".notification" />
-        <activity android:name=".event_type" />
-        <activity android:name=".Add_delete_edit" />
-        <activity android:name=".processing" />
-        <activity android:name=".history_data" />
-        <activity android:name=".insert_em" />
-        <activity android:name=".acc" />
         <activity android:name=".activities.LoginActivity" />
-        <activity
-            android:name=".activities.list.ListActivity" >
-        </activity>
-        <activity android:name=".activities.add.AddActivity">
-
-
-        </activity>
+        <activity android:name=".activities.list.ListActivity"></activity>
+        <activity android:name=".activities.add.AddActivity"></activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCe2EUeAMNxrz7psrYtH4hUOgtxCNOMZCc"/>
+            android:value="AIzaSyCe2EUeAMNxrz7psrYtH4hUOgtxCNOMZCc" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-
-        <provider android:authorities="com.facebook.app.FacebookContentProvider515110462212814"
+        <provider
             android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider515110462212814"
             android:exported="true" />
 
+        <activity
+            android:name=".activities.SummaryActivity"
+            android:theme="@style/Base.V7.Theme.AppCompat.Light.Dialog" >
+        </activity>
     </application>
 
 </manifest>

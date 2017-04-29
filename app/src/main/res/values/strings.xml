@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Emergency</string>
     <string name="title_activity_login">Sign in</string>
-    
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>

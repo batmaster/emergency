@@ -18,8 +18,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.application.emergency.R;
-import com.example.application.emergency.activities.LoginActivity;
 import com.example.application.emergency.activities.MainActivity;
+import com.example.application.emergency.activities.SummaryActivity;
 import com.example.application.emergency.activities.list.ListActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
@@ -239,9 +239,6 @@ public class AddActivity extends AppCompatActivity {
         if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null ) {
             menu.removeItem(R.id.menuLogout);
         }
-        else {
-            menu.removeItem(R.id.menuOfficer);
-        }
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -257,16 +254,8 @@ public class AddActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menuAdd:
-
-                break;
-            case R.id.menuList:
-                startActivity(new Intent(AddActivity.this, ListActivity.class));
-                finish();
-                break;
-            case R.id.menuOfficer:
-                startActivity(new Intent(AddActivity.this, LoginActivity.class));
-                finish();
+            case R.id.menuSummary:
+                startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
                 break;
             case R.id.menuClear:
                 app.getPreferences().removeString(Preferences.KEY_PHONE);
