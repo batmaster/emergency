@@ -4,7 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/c"
+    android:background="#E3F2FD"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingBottom="16dp"
@@ -23,7 +23,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="70"
+        android:layout_weight="90"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -58,51 +58,6 @@
             android:layout_height="match_parent">
 
         </com.github.mikephil.charting.charts.BarChart>
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/buttonAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:layout_margin="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="#FF0000"
-        android:text="กดปุ่มเพื่อเเจ้งเหตุ"
-        android:textSize="24sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        android:orientation="horizontal"
-        android:weightSum="100">
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="25">
-        </RelativeLayout>
-
-        <Button
-            android:id="@+id/buttonOfficer"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="25"
-            android:layout_margin="5dp"
-            android:background="#DCDCDC"
-            android:text="เจ้าหน้าที่" />
-
-        <Button
-            android:id="@+id/buttonList"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="25"
-            android:background="#DCDCDC"
-            android:layout_margin="5dp"
-            android:text="การแจ้งเหตุ" />
 
     </LinearLayout>
 

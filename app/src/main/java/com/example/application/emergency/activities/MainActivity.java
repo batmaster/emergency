@@ -62,10 +62,6 @@ public class MainActivity extends AppCompatActivity {
     /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private EmergencyApplication app;
 
-    private Button buttonAdd;
-    private Button buttonOfficer;
-    private Button buttonList;
-
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy MMMM");
     private static final SimpleDateFormat SQLSDF = new SimpleDateFormat("yyyy-MM-01 00:00:00");
 
@@ -83,39 +79,6 @@ public class MainActivity extends AppCompatActivity {
         app = (EmergencyApplication) getApplication();
 
         /** ตั้งค่า component **/
-        buttonAdd = (Button) findViewById(R.id.buttonAdd);
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkPermission()) {
-                    startActivity(new Intent(MainActivity.this, AddActivity.class));
-                    finish();
-                }
-            }
-        });
-
-        buttonOfficer = (Button) findViewById(R.id.buttonOfficer);
-        buttonOfficer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkPermission()) {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
-                }
-            }
-        });
-
-        buttonList = (Button) findViewById(R.id.buttonList);
-        buttonList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkPermission()) {
-                    startActivity(new Intent(MainActivity.this, ListActivity.class));
-                    finish();
-                }
-            }
-        });
-
         final Dialog dialog = new Dialog(MainActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_datepicker);
@@ -161,15 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
         barChart = (BarChart) findViewById(R.id.barChart);
         loadChart(calendar);
-
-        /** เปลี่ยนหน้าไปหน้า list หากมีบันทึก id ของ officer ไว้ **/
-        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
-            buttonOfficer.setVisibility(View.GONE);
-
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) buttonList.getLayoutParams();
-            params.weight = 50f;
-            buttonList.setLayoutParams(params);
-        }
     }
 
     /** ฟังก์ชั่นของระบบแอนดรอยด์ สำหรับเรียกใช้หลังการกลับจาก process อื่น **/
@@ -342,6 +296,9 @@ public class MainActivity extends AppCompatActivity {
         if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null ) {
             menu.removeItem(R.id.menuLogout);
         }
+        else {
+            menu.removeItem(R.id.menuOfficer);
+        }
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -357,6 +314,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menuAdd:
+                if (checkPermission()) {
+                    startActivity(new Intent(MainActivity.this, AddActivity.class));
+                    finish();
+                }
+                break;
+            case R.id.menuList:
+                if (checkPermission()) {
+                    startActivity(new Intent(MainActivity.this, ListActivity.class));
+                    finish();
+                }
+                break;
+            case R.id.menuOfficer:
+                if (checkPermission()) {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                }
+                break;
             case R.id.menuClear:
                 app.getPreferences().removeString(Preferences.KEY_PHONE);
                 Toast.makeText(getApplicationContext(), "ลบหมายเลขโทรศัพท์เรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();

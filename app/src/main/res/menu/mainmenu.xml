@@ -3,16 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menuClear"
-        android:title="Clear Number"
-        android:icon="@drawable/ic_cancel"
+        android:id="@+id/menuAdd"
+        android:title="แจ้งเหตุ"
         android:orderInCategory="1"
         app:showAsAction="withText"/>
 
     <item
-        android:id="@+id/menuLogout"
-        android:title="Logout"
-        android:icon="@drawable/ic_logout"
+        android:id="@+id/menuList"
+        android:title="รายการแจ้งเหตุ"
         android:orderInCategory="2"
+        app:showAsAction="withText"/>
+
+    <item
+        android:id="@+id/menuOfficer"
+        android:title="เจ้าหน้าที่"
+        android:orderInCategory="3"
+        app:showAsAction="withText"/>
+
+    <item
+        android:id="@+id/menuClear"
+        android:title="ลบหมายเลขโทรศัพท์"
+        android:icon="@drawable/ic_cancel"
+        android:orderInCategory="4"
+        app:showAsAction="withText"/>
+
+    <item
+        android:id="@+id/menuLogout"
+        android:title="ออกจากระบบ"
+        android:icon="@drawable/ic_logout"
+        android:orderInCategory="5"
         app:showAsAction="withText"/>
 </menu>
