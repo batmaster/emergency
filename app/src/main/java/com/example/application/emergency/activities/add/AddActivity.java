@@ -116,7 +116,6 @@ public class AddActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "กำลังเพิ่มเหตุการณ์", Toast.LENGTH_SHORT).show();
 
                             String title = detailFragment.getEditTextTitle().getText().toString();
-                            String detail = detailFragment.getEditTextDetail().getText().toString();
                             int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
                             double locationX = detailFragment.getMarker().getPosition().latitude;
                             double locationY = detailFragment.getMarker().getPosition().longitude;
@@ -129,7 +128,6 @@ public class AddActivity extends AppCompatActivity {
                             HashMap<String, String> params = new HashMap<String, String>();
                             params.put("function", "add_accident");
                             params.put("title", title);
-                            params.put("detail", detail);
                             params.put("type_id", String.valueOf(typeId));
                             params.put("location_x", String.valueOf(locationX));
                             params.put("location_y", String.valueOf(locationY));
@@ -165,7 +163,6 @@ public class AddActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "กำลังอัพเดตเหตุการณ์", Toast.LENGTH_SHORT).show();
 
                     String title = detailFragment.getEditTextTitle().getText().toString();
-                    String detail = detailFragment.getEditTextDetail().getText().toString();
                     int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
                     int status = detailFragment.getSpinnerStatus().getSelectedItemPosition();
                     double locationX = detailFragment.getMarker().getPosition().latitude;
@@ -182,7 +179,6 @@ public class AddActivity extends AppCompatActivity {
                     params.put("aid", String.valueOf(aid));
                     params.put("officer_id", officerId);
                     params.put("status", String.valueOf(status));
-                    params.put("detail", detail);
                     params.put("type_id", String.valueOf(typeId));
                     params.put("location_x", String.valueOf(locationX));
                     params.put("location_y", String.valueOf(locationY));

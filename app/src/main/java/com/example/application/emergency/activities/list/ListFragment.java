@@ -94,7 +94,6 @@ public class ListFragment extends Fragment {
                                     o.getString("type"),
                                     o.getString("title"),
                                     o.getString("phone"),
-                                    o.getString("detail"),
                                     o.getDouble("location_x"),
                                     o.getDouble("location_y"),
                                     o.getInt("status"),

@@ -77,7 +77,7 @@
             $status = $_POST["status"];
             $phone = $_POST["phone"];
 
-            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.phone, a.detail, a.location_x, a.location_y, a.status, a.date, at.color
+            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.phone, a.location_x, a.location_y, a.status, a.date, at.color
                 FROM accident a, accident_type at
                 WHERE a.type_id = at.id AND a.status = $status AND a.phone LIKE '%$phone%'
                 ORDER BY a.date DESC"));
@@ -85,7 +85,7 @@
         else if ($function == "get_accident") {
             $aid = $_POST["aid"];
 
-            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.phone, a.detail, a.location_x, a.location_y, a.status, a.date, at.color
+            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.phone, a.location_x, a.location_y, a.status, a.date, at.color
                 FROM accident a, accident_type at
                 WHERE a.type_id = at.id AND a.id = $aid"));
         }
@@ -106,13 +106,12 @@
         }
         else if ($function == "add_accident") {
             $title = $_POST["title"];
-            $detail = $_POST["detail"];
             $type_id = $_POST["type_id"];
             $location_x = $_POST["location_x"];
             $location_y = $_POST["location_y"];
             $phone = $_POST["phone"];
 
-            sql("INSERT INTO accident (type_id, title, phone, detail, location_x, location_y, date) VALUES ($type_id, '$title', '$phone', '$detail', '$location_x', '$location_y', NOW())");
+            sql("INSERT INTO accident (type_id, title, phone, location_x, location_y, date) VALUES ($type_id, '$title', '$phone', '$location_x', '$location_y', NOW())");
 
             echo json_encode(sql("SELECT id FROM accident WHERE phone = '$phone' AND title = '$title' AND location_x = '$location_x' AND location_y = '$location_y' ORDER BY id DESC LIMIT 1", false));
 
@@ -121,13 +120,12 @@
             $aid = $_POST["aid"];
             $title = $_POST["title"];
             $officer_id = $_POST["officer_id"];
-            $detail = $_POST["detail"];
             $type_id = $_POST["type_id"];
             $location_x = $_POST["location_x"];
             $location_y = $_POST["location_y"];
             $status = $_POST["status"];
 
-            sql("UPDATE accident SET title = '$title', officer_id = '$officer_id', detail = '$detail', type_id = $type_id, status = $status, location_x = '$location_x', location_y = '$location_y' WHERE id = $aid");
+            sql("UPDATE accident SET title = '$title', officer_id = '$officer_id', type_id = $type_id, status = $status, location_x = '$location_x', location_y = '$location_y' WHERE id = $aid");
 
             echo json_encode(sql("SELECT id FROM accident WHERE title = '$title' AND location_x = '$location_x' AND location_y = '$location_y' ORDER BY id DESC LIMIT 1", false));
 
@@ -166,7 +164,7 @@
     if (isset($_GET["id"])) {
         $aid = $_GET["id"];
 
-        $detail = sql("SELECT a.id, a.type_id, at.title type, a.title, a.detail, a.location_x, a.location_y, a.status, a.date, at.color
+        $detail = sql("SELECT a.id, a.type_id, at.title type, a.title, a.location_x, a.location_y, a.status, a.date, at.color
             FROM accident a, accident_type at
             WHERE a.type_id = at.id AND a.id = $aid", false);
 
@@ -195,7 +193,6 @@
                 <h1><?php echo $detail["title"];?></h1>
                 <h3><?php echo $detail["type"];?></h3>
                 <br>
-                <p><?php echo $detail["detail"];?></p>
                 <h4>รับแจ้งเหตุ: <?php echo $detail["date"];?></h4>
 
                 <?php for ($i = 0; $i < count($images); $i++) {?>

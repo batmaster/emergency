@@ -48,7 +48,6 @@ public class DetailFragment extends Fragment {
     private int aid;
 
     private EditText editTextTitle;
-    private EditText editTextDetail;
     private Spinner spinner;
     private ArrayList<Integer> spinnerValue;
     private LinearLayout layoutStatus;
@@ -80,7 +79,6 @@ public class DetailFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_add_detail, container, false);
 
         editTextTitle = (EditText) v.findViewById(R.id.editTextTitle);
-        editTextDetail = (EditText) v.findViewById(R.id.editTextDetail);
 
         spinner = (Spinner) v.findViewById(R.id.spinner);
         spinnerValue = new ArrayList<Integer>();
@@ -195,7 +193,6 @@ public class DetailFragment extends Fragment {
                             final JSONObject o = a.getJSONObject(0);
 
                             editTextTitle.setText(o.getString("title"));
-                            editTextDetail.setText(o.getString("detail"));
                             spinnerStatus.setSelection(o.getInt("status"));
 
                             /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
@@ -292,10 +289,6 @@ public class DetailFragment extends Fragment {
     }
 
     /** ฟังก์ชั่นสำหรับเรียกใช้ตัวแปรใน class **/
-    public EditText getEditTextDetail() {
-        return editTextDetail;
-    }
-
     public EditText getEditTextTitle() {
         return editTextTitle;
     }
