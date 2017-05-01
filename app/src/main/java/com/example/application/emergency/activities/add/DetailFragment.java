@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -51,7 +52,9 @@ public class DetailFragment extends Fragment {
     private Spinner spinner;
     private ArrayList<Integer> spinnerValue;
     private LinearLayout layoutStatus;
-    private Spinner spinnerStatus;
+    private RadioButton radioStatus0;
+    private RadioButton radioStatus1;
+    private RadioButton radioStatus2;
     private Button buttonDelete;
 
     private MapFragment mapFragment;
@@ -84,7 +87,9 @@ public class DetailFragment extends Fragment {
         spinnerValue = new ArrayList<Integer>();
 
         layoutStatus = (LinearLayout) v.findViewById(R.id.layoutStatus);
-        spinnerStatus = (Spinner) v.findViewById(R.id.spinnerStatus);
+        radioStatus0 = (RadioButton) v.findViewById(R.id.radioStatus0);
+        radioStatus1 = (RadioButton) v.findViewById(R.id.radioStatus1);
+        radioStatus2 = (RadioButton) v.findViewById(R.id.radioStatus2);
 
         buttonDelete = (Button) v.findViewById(R.id.buttonDelete);
         buttonDelete.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +198,7 @@ public class DetailFragment extends Fragment {
                             final JSONObject o = a.getJSONObject(0);
 
                             editTextTitle.setText(o.getString("title"));
-                            spinnerStatus.setSelection(o.getInt("status"));
+                            setStatus(o.getInt("status"));
 
                             /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
                             HashMap<String, String> params = new HashMap<String, String>();
@@ -281,7 +286,7 @@ public class DetailFragment extends Fragment {
 
             /** ซ่อน component สถานะ หากไม่ใช่เจ้าหน้าที่ **/
             if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
-                spinnerStatus.setEnabled(false);
+                setStatusEnable(false);
             }
         }
 
@@ -309,7 +314,19 @@ public class DetailFragment extends Fragment {
         return layoutStatus;
     }
 
-    public Spinner getSpinnerStatus() {
-        return spinnerStatus;
+    public int getStatus() {
+        return radioStatus0.isChecked() ? 0 : (radioStatus1.isChecked() ? 1 : 2);
+    }
+
+    private void setStatus(int status) {
+        radioStatus0.setChecked(status == 0);
+        radioStatus1.setChecked(status == 1);
+        radioStatus2.setChecked(status == 2);
+    }
+
+    private void setStatusEnable(boolean state) {
+        radioStatus0.setEnabled(state);
+        radioStatus1.setEnabled(state);
+        radioStatus2.setEnabled(state);
     }
 }

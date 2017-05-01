@@ -165,7 +165,7 @@ public class AddActivity extends AppCompatActivity {
 
                     String title = detailFragment.getEditTextTitle().getText().toString();
                     int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
-                    int status = detailFragment.getSpinnerStatus().getSelectedItemPosition();
+                    int status = detailFragment.getStatus();
                     double locationX = detailFragment.getMarker().getPosition().latitude;
                     double locationY = detailFragment.getMarker().getPosition().longitude;
                     final ArrayList<Uri> imageUris = imagesFragment.getImageUris();

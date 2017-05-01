@@ -51,6 +51,13 @@ public class ListActivity extends AppCompatActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    buttonAdd.setVisibility(View.VISIBLE);
+                }
+                else {
+                    buttonAdd.setVisibility(View.GONE);
+                }
+
                 viewPager.setCurrentItem(tab.getPosition());
             }
 

@@ -39,11 +39,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <Spinner
-            android:layout_width="match_parent"
+        <RadioGroup
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/status"
-            android:id="@+id/spinnerStatus" />
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/radioStatus0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="เหตุการณ์ใหม่" />
+
+            <RadioButton
+                android:id="@+id/radioStatus1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="เหตุกำลังดำเนินการ" />
+
+            <RadioButton
+                android:id="@+id/radioStatus2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="เหตุย้อนหลัง" />
+        </RadioGroup>
     </LinearLayout>
 
     <Button
