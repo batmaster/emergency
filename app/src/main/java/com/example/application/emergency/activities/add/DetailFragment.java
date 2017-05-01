@@ -344,9 +344,9 @@ public class DetailFragment extends Fragment {
             radioStatus2.setVisibility(status != 2 ? View.GONE : View.VISIBLE);
         }
         else {
-            radioStatus0.setVisibility(0 <= status ? View.GONE : View.VISIBLE);
-            radioStatus1.setVisibility(1 <= status ? View.GONE : View.VISIBLE);
-            radioStatus2.setVisibility(2 <= status ? View.GONE : View.VISIBLE);
+            radioStatus0.setVisibility(status != 3 ? View.GONE : View.VISIBLE);
+            radioStatus1.setVisibility(status != 0 ? View.GONE : View.VISIBLE);
+            radioStatus2.setVisibility(status != 1 ? View.GONE : View.VISIBLE);
         }
     }
 
