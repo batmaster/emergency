@@ -19,11 +19,8 @@
     <string name="drawer_open">Open Navigation drawer</string>
     <string name="drawer_close">Close Navigation drawer</string>
 
-    <string-array name="status">
-        <item>เหตุการณ์ใหม่</item>
-        <item>เหตุกำลังดำเนินการ</item>
-        <item>เหตุย้อนหลัง</item>
-    </string-array>
+    <string name="delete_confirm">ลบ</string>
+    <string name="delete_no_confirm">ไม่ลบ</string>
 
     <string name="facebook_app_id">515110462212814</string>
 

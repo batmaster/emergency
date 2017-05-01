@@ -60,7 +60,7 @@
                 android:id="@+id/radioStatus2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="เหตุย้อนหลัง" />
+                android:text="เหตุเสร็จสิ้น" />
         </RadioGroup>
     </LinearLayout>
 

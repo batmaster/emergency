@@ -4,6 +4,8 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:weightSum="100" >
 
@@ -11,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="90"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <android.support.design.widget.TabLayout
@@ -36,7 +40,7 @@
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="เหตุย้อนหลัง" />
+                android:text="เหตุเสร็จสิ้น" />
 
         </android.support.design.widget.TabLayout>
 

@@ -1,12 +1,14 @@
 package com.example.application.emergency.activities.add;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,19 +97,29 @@ public class DetailFragment extends Fragment {
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("function", "remove_accident");
-                params.put("aid", String.valueOf(aid));
-                app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
-                    @Override
-                    public void onResponse(boolean success, Throwable error, JSONObject data) {
-                        if (data != null) {
-                            startActivity(new Intent(getActivity().getApplicationContext(), ListActivity.class));
-                            getActivity().finish();
+
+                new AlertDialog.Builder(getActivity())
+                    .setTitle("ลบรายการแจ้งเตือน")
+                    .setMessage("คุณต้องการลบรายการแจ้งเตือนนี้หรือไม่")
+                    .setPositiveButton(R.string.delete_confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("function", "remove_accident");
+                            params.put("aid", String.valueOf(aid));
+                            app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+                                @Override
+                                public void onResponse(boolean success, Throwable error, JSONObject data) {
+                                    if (data != null) {
+                                        startActivity(new Intent(getActivity().getApplicationContext(), ListActivity.class));
+                                        getActivity().finish();
+                                    }
+                                }
+                            });
                         }
-                    }
-                });
+                    })
+                    .setNegativeButton(R.string.delete_no_confirm, null).show();
             }
         });
 
@@ -185,6 +197,9 @@ public class DetailFragment extends Fragment {
         }
         /** ซ่่อน component ที่ไม่ได้ใช้งาน หากเป็นการแก้ไขรายการ **/
         else {
+            editTextTitle.setEnabled(false);
+            spinner.setEnabled(false);
+
             /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
             HashMap<String, String> params2 = new HashMap<String, String>();
             params2.put("function", "get_accident");
@@ -322,6 +337,17 @@ public class DetailFragment extends Fragment {
         radioStatus0.setChecked(status == 0);
         radioStatus1.setChecked(status == 1);
         radioStatus2.setChecked(status == 2);
+
+        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
+            radioStatus0.setVisibility(status != 0 ? View.GONE : View.VISIBLE);
+            radioStatus1.setVisibility(status != 1 ? View.GONE : View.VISIBLE);
+            radioStatus2.setVisibility(status != 2 ? View.GONE : View.VISIBLE);
+        }
+        else {
+            radioStatus0.setVisibility(0 <= status ? View.GONE : View.VISIBLE);
+            radioStatus1.setVisibility(1 <= status ? View.GONE : View.VISIBLE);
+            radioStatus2.setVisibility(2 <= status ? View.GONE : View.VISIBLE);
+        }
     }
 
     private void setStatusEnable(boolean state) {

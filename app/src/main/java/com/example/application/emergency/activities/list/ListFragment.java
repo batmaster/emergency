@@ -1,11 +1,16 @@
 package com.example.application.emergency.activities.list;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.example.application.emergency.R;
 import com.example.application.emergency.services.EmergencyApplication;
@@ -30,6 +35,7 @@ public class ListFragment extends Fragment {
     private int status;
     public static final String KEY_STATUS = "KEY_STATUS";
 
+    private SearchView searchView;
     private ListView listView;
 
     public static ListFragment getInstance(int status) {
@@ -45,7 +51,36 @@ public class ListFragment extends Fragment {
         app = (EmergencyApplication) getActivity().getApplication();
 
         /** ตั้งค่า component **/
-        View v = inflater.inflate(R.layout.fragment_list, container, false);
+        final View v = inflater.inflate(R.layout.fragment_list, container, false);
+
+        searchView = (SearchView) v.findViewById(R.id.search);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                loadList();
+                return false;
+            }
+        });
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchView.setIconified(false);
+            }
+        });
+//        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean b) {
+//                Log.d("focus", b + "  " + view.toString());
+//                if (!b) {
+//                    hideKeyboard(view);
+//                }
+//            }
+//        });
 
         listView = (ListView) v.findViewById(R.id.listView);
 
@@ -67,6 +102,7 @@ public class ListFragment extends Fragment {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("function", "get_accidents");
         params.put("status", Integer.toString(status));
+        params.put("search", String.valueOf(searchView.getQuery()));
         if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
             String phone = app.getPreferences().getString(Preferences.KEY_PHONE);
             if (phone == null || phone.equals("")) {
@@ -111,5 +147,10 @@ public class ListFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

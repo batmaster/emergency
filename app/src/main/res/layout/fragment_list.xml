@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4px"
+        android:background="#eeffff"/>
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
         android:divider="#00000000"
         android:dividerHeight="10px"
-        android:layout_height="match_parent" />
+        android:focusableInTouchMode="true" />
 </LinearLayout>
