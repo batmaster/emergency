@@ -179,6 +179,7 @@ public class AddActivity extends AppCompatActivity {
                     params.put("function", "edit_accident");
                     params.put("aid", String.valueOf(aid));
                     params.put("officer_id", officerId);
+                    params.put("title", title);
                     params.put("status", String.valueOf(status));
                     params.put("type_id", String.valueOf(typeId));
                     params.put("location_x", String.valueOf(locationX));

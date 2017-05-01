@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/menuSummary"
-        android:title="สรุปยอด"
+        android:title="สถิติ"
         android:orderInCategory="1"
         app:showAsAction="withText"/>
 

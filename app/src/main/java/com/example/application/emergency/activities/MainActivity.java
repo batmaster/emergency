@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             buttonOfficer.setVisibility(View.GONE);
 
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) buttonList.getLayoutParams();
-            params.weight = 50f;
+            params.weight = 100f;
             buttonList.setLayoutParams(params);
         }
     }
