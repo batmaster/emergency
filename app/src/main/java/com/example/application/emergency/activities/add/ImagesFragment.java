@@ -15,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.list.ListModel;
 import com.example.application.emergency.services.EmergencyApplication;
@@ -120,8 +123,32 @@ public class ImagesFragment extends Fragment {
 
                             layoutGallery.addView(im, layoutGallery.getChildCount() - 2);
 
-                            Glide.with(getContext()).load(imageUri).centerCrop().placeholder(R.drawable.placeholder).into(im);
-                            Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
+                            Glide.with(getContext()).load(imageUri).listener(new RequestListener<Uri, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    e.printStackTrace();
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+                                    return false;
+                                }
+                            }).centerCrop().placeholder(R.drawable.placeholder).into(im);
+                            Glide.with(getContext()).load(imageUri).listener(new RequestListener<Uri, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    e.printStackTrace();
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+
+                                    return false;
+                                }
+                            }).fitCenter().placeholder(R.drawable.placeholder).into(imageView);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
