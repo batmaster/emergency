@@ -120,7 +120,7 @@ public class ImagesFragment extends Fragment {
 
                             layoutGallery.addView(im, layoutGallery.getChildCount() - 2);
 
-                            Glide.with(getContext()).load(imageUri).centerCrop().into(im);
+                            Glide.with(getContext()).load(imageUri).centerCrop().placeholder(R.drawable.placeholder).into(im);
                             Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
                         }
                     } catch (JSONException e) {

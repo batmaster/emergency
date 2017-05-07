@@ -2,6 +2,8 @@ package com.example.application.emergency.services;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -18,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -28,6 +31,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import static java.lang.System.gc;
 
 /**
  * class สำหรับฟังก์ชั่นที่ใช้ติดต่อสื่อสารกับ server
@@ -66,7 +71,6 @@ public class HTTPService {
                     byte[] buffer;
                     int maxBufferSize = 10 * 1024 * 1024;
                     int resCode = 0;
-                    String resMessage = "";
 
                     String lineEnd = "\r\n";
                     String twoHyphens = "--";
@@ -80,7 +84,8 @@ public class HTTPService {
 
                         String newName = aid + "_" + DateFormat.format("yyyy_MM_dd_HH_mm_" + file.getName(), new Date()).toString();
 
-                        FileInputStream fileInputStream = new FileInputStream(new File(sourceFileUri));
+//                        FileInputStream fileInputStream = new FileInputStream(new File(sourceFileUri));
+                        ByteArrayInputStream fileInputStream = getReducedImage(sourceFileUri);
 
                         URL url = new URL(BASE_URL);
                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -126,8 +131,6 @@ public class HTTPService {
                             }
                             byte[] result = bos.toByteArray();
                             bos.close();
-
-                            resMessage = new String(result);
                         }
                         else {
                             upload(uri, aid);
@@ -138,7 +141,7 @@ public class HTTPService {
                         outputStream.close();
 
                     } catch (Exception ex) {
-                        // Exception handling
+                        ex.printStackTrace();
                     }
 
                 } catch (Exception ex) {
@@ -205,5 +208,39 @@ public class HTTPService {
                 cursor.close();
             }
         }
+    }
+
+    // ฟังก์ชั่นใช้ลดขนาดไฟล์ภาพก่อนอัพโหลด
+    private ByteArrayInputStream getReducedImage(String sourceFileUri) {
+        Bitmap b = BitmapFactory.decodeFile(sourceFileUri);
+        int w = b.getWidth();
+        int h = b.getHeight();
+
+        Log.d("imageaa", "before " + b.getWidth() + " " + b.getHeight());
+        Bitmap out = null;
+        if (h > 1920 && w < h) {
+            out = Bitmap.createScaledBitmap(b, w * 1920 / h, 1920, false);
+        }
+        else if (w > 1920 && w > h) {
+            out = Bitmap.createScaledBitmap(b, 1920, h * 1920 / w, false);
+        }
+        else {
+            out = Bitmap.createScaledBitmap(b, w, h, false);
+        }
+        b.recycle();
+
+        Log.d("imageaa", "after " + out.getWidth() + " " + out.getHeight());
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        out.compress(Bitmap.CompressFormat.JPEG, 75, bos);
+        byte[] bitmapdata = bos.toByteArray();
+        out.recycle();
+
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bitmapdata);
+
+        bitmapdata = null;
+        gc();
+
+        return byteArrayInputStream;
     }
 }
