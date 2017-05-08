@@ -120,7 +120,7 @@ public class AddActivity extends AppCompatActivity {
                             int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
                             double locationX = detailFragment.getMarker().getPosition().latitude;
                             double locationY = detailFragment.getMarker().getPosition().longitude;
-                            final ArrayList<Uri> imageUris = imagesFragment.getImageUris();
+                            final ArrayList<Uri> imageUris = imagesFragment.getNewImageUris();
 
                             String phone = editTextPhone.getText().toString();
                             app.getPreferences().putString(Preferences.KEY_PHONE, phone);
@@ -168,7 +168,7 @@ public class AddActivity extends AppCompatActivity {
                     int status = detailFragment.getStatus();
                     double locationX = detailFragment.getMarker().getPosition().latitude;
                     double locationY = detailFragment.getMarker().getPosition().longitude;
-                    final ArrayList<Uri> imageUris = imagesFragment.getImageUris();
+                    final ArrayList<Uri> imageUris = imagesFragment.getNewImageUris();
                     String officerId = app.getPreferences().getString(Preferences.KEY_OFFICER_ID);
                     if (officerId == null) {
                         officerId = "";
@@ -190,6 +190,36 @@ public class AddActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(boolean success, Throwable error, JSONObject data) {
                             if (data != null) {
+
+                                for (int i = 0; i < imagesFragment.getRemoteRemoves().size(); i++) {
+                                    /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
+                                    HashMap<String, String> params2 = new HashMap<String, String>();
+                                    params2.put("function", "remove_image");
+                                    params2.put("id", String.valueOf(imagesFragment.getRemoteRemoves().get(i)));
+                                    app.getHttpService().callPHP(params2, new HTTPService.OnResponseCallback<JSONObject>() {
+                                        @Override
+                                        public void onResponse(boolean success, Throwable error, JSONObject data) {
+                                            if (data != null) {
+                                                try {
+                                                    String id = data.getString("id");
+                                                    app.getHttpService().upload(imageUris, id);
+
+                                                    Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    startActivity(intent);
+                                                    finish();
+
+
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+
+
                                 try {
                                     String id = data.getString("id");
                                     app.getHttpService().upload(imageUris, id);

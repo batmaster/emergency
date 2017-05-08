@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -20,6 +21,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.list.ListModel;
+import com.example.application.emergency.components.DeletableImageView;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 
@@ -43,7 +45,8 @@ public class ImagesFragment extends Fragment {
     private LinearLayout layoutGallery;
     private ImageView imageViewCamera;
     private ImageView imageViewAlbum;
-    private ArrayList<Uri> imageUris;
+    private ImageView imageViewDelete;
+    private ImageView imageViewDone;
 
     private ImageView imageView;
 
@@ -95,12 +98,26 @@ public class ImagesFragment extends Fragment {
             }
         });
 
-        imageUris = new ArrayList<Uri>();
+        imageViewDelete = (ImageView) v.findViewById(R.id.imageViewDelete);
+        imageViewDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setEdittingMode(true);
+            }
+        });
+
+        imageViewDone = (ImageView) v.findViewById(R.id.imageViewDone);
+        imageViewDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setEdittingMode(false);
+
+            }
+        });
 
         imageView = (ImageView) v.findViewById(R.id.imageView);
 
-        /** เปิดแอปอัลบัมภาพ **/
-
+        /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
         HashMap<String, String> params2 = new HashMap<String, String>();
         params2.put("function", "get_images");
         params2.put("aid", String.valueOf(aid));
@@ -115,13 +132,13 @@ public class ImagesFragment extends Fragment {
                         for (int i = 0; i < a.length(); i++) {
                             JSONObject o = a.getJSONObject(i);
 
-                            Uri imageUri = Uri.parse(o.getString("image"));
+                            final Uri imageUri = Uri.parse(o.getString("image"));
 
                             Log.d("imageUri", imageUri.toString());
 
-                            ImageView im = getImageView(imageUri);
+                            final DeletableImageView im = getDeletableImageView(imageUri, o.getInt("id"));
 
-                            layoutGallery.addView(im, layoutGallery.getChildCount() - 2);
+                            layoutGallery.addView(im, layoutGallery.getChildCount() - 4);
 
                             Glide.with(getContext()).load(imageUri).listener(new RequestListener<Uri, GlideDrawable>() {
                                 @Override
@@ -135,7 +152,7 @@ public class ImagesFragment extends Fragment {
 
                                     return false;
                                 }
-                            }).centerCrop().placeholder(R.drawable.placeholder).into(im);
+                            }).centerCrop().placeholder(R.drawable.placeholder).into(im.getImageView());
                             Glide.with(getContext()).load(imageUri).listener(new RequestListener<Uri, GlideDrawable>() {
                                 @Override
                                 public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -160,11 +177,6 @@ public class ImagesFragment extends Fragment {
         return v;
     }
 
-    /** ฟังก์ชั่นสำหรับเรียกใช้ตัวแปรใน class **/
-    public ArrayList<Uri> getImageUris() {
-        return imageUris;
-    }
-
     /** ฟังก์ชั่นของระบบแอนดรอยด์ สำหรับเรียกใช้หลังการกลับจาก process อื่น **/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -173,27 +185,27 @@ public class ImagesFragment extends Fragment {
         /** ถ้าเป็นการกลับจากกล้องหรืออัลบัม ให้เอาภาพมาแสดง และใส่ไว้ในรายการในตัวแปร **/
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == RESULT_CAMERA || requestCode == RESULT_GALLERY) {
-                Uri imageUri = data.getData();
+                final Uri imageUri = data.getData();
 
-                ImageView i = getImageView(imageUri);
+                final DeletableImageView i = getDeletableImageView(imageUri, 0);
 
-                layoutGallery.addView(i, layoutGallery.getChildCount() - 2);
+                layoutGallery.addView(i, layoutGallery.getChildCount() - 4);
 
-                Glide.with(getContext()).load(imageUri).centerCrop().into(i);
+                Glide.with(getContext()).load(imageUri).centerCrop().into(i.getImageView());
                 Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
-                imageUris.add(imageUri);
             }
         }
     }
 
     /** ฟังก์ชั่นสำหรับสร้าง component พร้อมรูปภาพมาแสดง **/
-    private ImageView getImageView(final Uri imageUri) {
+    private DeletableImageView getDeletableImageView(final Uri imageUri, int imageId) {
         Resources r = getResources();
         int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 110, r.getDisplayMetrics());
         int pd = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
 
-        final ImageView i = new ImageView(getContext());
-        i.setLayoutParams(new LinearLayout.LayoutParams(size, size));
+        DeletableImageView deletableImageView = new DeletableImageView(getContext(), imageUri, imageId);
+        ImageView i = deletableImageView.getImageView();
+        i.setLayoutParams(new RelativeLayout.LayoutParams(size, size));
         i.setAdjustViewBounds(true);
         i.setPadding(pd, pd, pd, pd);
         i.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +215,63 @@ public class ImagesFragment extends Fragment {
             }
         });
 
-        return i;
+        setEdittingMode(false);
+
+        return deletableImageView;
+    }
+
+    private void setEdittingMode(boolean editingState) {
+        if (editingState) {
+            imageViewCamera.setVisibility(View.GONE);
+            imageViewAlbum.setVisibility(View.GONE);
+            imageViewDelete.setVisibility(View.GONE);
+            imageViewDone.setVisibility(View.VISIBLE);
+
+            for (int i = 0; i < layoutGallery.getChildCount() - 4; i++) {
+                DeletableImageView im = (DeletableImageView) layoutGallery.getChildAt(i);
+                im.setEdittingMode(true);
+
+                layoutGallery.getChildAt(i).setVisibility(View.VISIBLE);
+            }
+        }
+        else {
+            imageViewCamera.setVisibility(View.VISIBLE);
+            imageViewAlbum.setVisibility(View.VISIBLE);
+            imageViewDelete.setVisibility(View.VISIBLE);
+            imageViewDone.setVisibility(View.GONE);
+
+            for (int i = 0; i < layoutGallery.getChildCount() - 4; i++) {
+                DeletableImageView im = (DeletableImageView) layoutGallery.getChildAt(i);
+                im.setEdittingMode(false);
+
+                if (im.isRemoved()) {
+                    layoutGallery.getChildAt(i).setVisibility(View.GONE);
+                }
+            }
+        }
+    }
+
+    public ArrayList<Uri> getNewImageUris() {
+        ArrayList<Uri> list = new ArrayList<Uri>();
+        for (int i = 0; i < layoutGallery.getChildCount() - 4; i++) {
+            DeletableImageView im = (DeletableImageView) layoutGallery.getChildAt(i);
+            if (im.isLocal() && !im.isRemoved()) {
+                list.add(im.getImageUri());
+            }
+        }
+
+        return list;
+    }
+
+    public ArrayList<Integer> getRemoteRemoves() {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i = 0; i < layoutGallery.getChildCount() - 4; i++) {
+            DeletableImageView im = (DeletableImageView) layoutGallery.getChildAt(i);
+            if (!im.isLocal() && im.isRemoved()) {
+                list.add(im.getImageId());
+            }
+        }
+
+        return list;
     }
 }

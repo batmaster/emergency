@@ -227,19 +227,18 @@ public class HTTPService {
         else {
             out = Bitmap.createScaledBitmap(b, w, h, false);
         }
-        b.recycle();
+        b = null;
 
         Log.d("imageaa", "after " + out.getWidth() + " " + out.getHeight());
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         out.compress(Bitmap.CompressFormat.JPEG, 75, bos);
         byte[] bitmapdata = bos.toByteArray();
-        out.recycle();
+        bos = null;
 
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bitmapdata);
 
         bitmapdata = null;
-        gc();
 
         return byteArrayInputStream;
     }

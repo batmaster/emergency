@@ -104,7 +104,14 @@
 
             $url = 'http://'. $_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'] . "/";
 
-            echo json_encode(sql("SELECT CONCAT('$url', image) image FROM accident_image WHERE accident_id = $aid"));
+            echo json_encode(sql("SELECT id, CONCAT('$url', image) image FROM accident_image WHERE accident_id = $aid"));
+        }
+        else if ($function == "remove_image") {
+            $id = $_POST["id"];
+
+            sql("DELETE FROM accident_image WHERE id = $id");
+
+            echo json_encode(["ok" => 0]);
         }
         else if ($function == "add_accident") {
             $title = $_POST["title"];
