@@ -9,9 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.services.ReadableTime;
@@ -61,14 +66,32 @@ public class ListViewAdapter extends BaseAdapter {
             view = mInflater.inflate(R.layout.listview_row, viewGroup, false);
         }
 
+        ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+        Glide.with(context).load(list.get(i).getTypeImage()).listener(new RequestListener<String, GlideDrawable>() {
+            @Override
+            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                e.printStackTrace();
+
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                return false;
+            }
+        }).fitCenter().placeholder(R.drawable.placeholder).into(imageView);
+
         TextView textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
         textViewTitle.setText(list.get(i).getTitle());
 
-        TextView textViewPhone = (TextView) view.findViewById(R.id.textViewPhone);
-        textViewPhone.setText(list.get(i).getPhone());
-
         TextView textViewTime = (TextView) view.findViewById(R.id.textViewTime);
         textViewTime.setText(ReadableTime.get(list.get(i).getDate()));
+
+        TextView textViewPeople = (TextView) view.findViewById(R.id.textViewPeople);
+        textViewPeople.setText(list.get(i).getPhone());
+
+        TextView textViewTimeReal = (TextView) view.findViewById(R.id.textViewTimeReal);
+        textViewTimeReal.setText(list.get(i).getDate());
 
         view.setBackgroundColor(Color.parseColor(list.get(i).getColor()));
 

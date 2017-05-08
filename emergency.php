@@ -78,7 +78,9 @@
             $search = $_POST["search"];
             $phone = $_POST["phone"];
 
-            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.phone, a.location_x, a.location_y, a.status, a.date, at.color
+            $url = 'http://'. $_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'] . "/";
+
+            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.phone, a.location_x, a.location_y, a.status, a.date, at.color, CONCAT('$url', at.image) type_image
                 FROM accident a, accident_type at
                 WHERE a.type_id = at.id AND a.status = $status AND a.phone LIKE '%$phone%'
                 AND (at.title LIKE '%$search%' OR a.title LIKE '%$search%' OR a.phone LIKE '%$search%')

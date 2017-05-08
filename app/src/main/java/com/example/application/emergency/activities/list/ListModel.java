@@ -17,8 +17,9 @@ public class ListModel {
     private String date;
 
     private String color;
+    private String typeImage;
 
-    public ListModel(int id, int typeId, String type, String title, String phone, double locationX, double locationY, int status, String date, String color) {
+    public ListModel(int id, int typeId, String type, String title, String phone, double locationX, double locationY, int status, String date, String color, String typeImage) {
         this.id = id;
         this.typeId = typeId;
         this.type = type;
@@ -29,9 +30,9 @@ public class ListModel {
         this.status = status;
         this.date = date;
         this.color = color;
+        this.typeImage = typeImage;
     }
 
-    /** ฟังก์ชั่นสำหรับเรียกใช้ตัวแปรใน class **/
     public int getId() {
         return id;
     }
@@ -110,5 +111,13 @@ public class ListModel {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getTypeImage() {
+        return typeImage;
+    }
+
+    public void setTypeImage(String typeImage) {
+        this.typeImage = typeImage;
     }
 }
