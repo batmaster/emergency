@@ -22,6 +22,9 @@
     <string name="delete_confirm">ลบ</string>
     <string name="delete_no_confirm">ไม่ลบ</string>
 
+    <string name="update_confirm">อัพเดต</string>
+    <string name="update_no_confirm">ยกเลิก</string>
+
     <string name="facebook_app_id">515110462212814</string>
 
 

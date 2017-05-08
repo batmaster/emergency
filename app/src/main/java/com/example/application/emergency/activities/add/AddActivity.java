@@ -1,12 +1,14 @@
 package com.example.application.emergency.activities.add;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -161,45 +163,72 @@ public class AddActivity extends AppCompatActivity {
                     dialog.show();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "กำลังอัพเดตเหตุการณ์", Toast.LENGTH_SHORT).show();
 
-                    String title = detailFragment.getEditTextTitle().getText().toString();
-                    int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
-                    int status = detailFragment.getStatus();
-                    double locationX = detailFragment.getMarker().getPosition().latitude;
-                    double locationY = detailFragment.getMarker().getPosition().longitude;
-                    final ArrayList<Uri> imageUris = imagesFragment.getNewImageUris();
-                    String officerId = app.getPreferences().getString(Preferences.KEY_OFFICER_ID);
-                    if (officerId == null) {
-                        officerId = "";
-                    }
+                    new AlertDialog.Builder(AddActivity.this)
+                            .setTitle("อัพเดตรายการแจ้งเตือน")
+                            .setMessage("คุณต้องการอัพเดตรายการแจ้งเตือนนี้หรือไม่")
+                            .setPositiveButton(R.string.update_confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Toast.makeText(getApplicationContext(), "กำลังอัพเดตเหตุการณ์", Toast.LENGTH_SHORT).show();
 
-                    /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    params.put("function", "edit_accident");
-                    params.put("aid", String.valueOf(aid));
-                    params.put("officer_id", officerId);
-                    params.put("title", title);
-                    params.put("status", String.valueOf(status));
-                    params.put("type_id", String.valueOf(typeId));
-                    params.put("location_x", String.valueOf(locationX));
-                    params.put("location_y", String.valueOf(locationY));
-                    params.put("status", String.valueOf(status));
+                                    String title = detailFragment.getEditTextTitle().getText().toString();
+                                    int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
+                                    int status = detailFragment.getStatus();
+                                    double locationX = detailFragment.getMarker().getPosition().latitude;
+                                    double locationY = detailFragment.getMarker().getPosition().longitude;
+                                    final ArrayList<Uri> imageUris = imagesFragment.getNewImageUris();
+                                    String officerId = app.getPreferences().getString(Preferences.KEY_OFFICER_ID);
+                                    if (officerId == null) {
+                                        officerId = "";
+                                    }
 
-                    app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
-                        @Override
-                        public void onResponse(boolean success, Throwable error, JSONObject data) {
-                            if (data != null) {
-
-                                for (int i = 0; i < imagesFragment.getRemoteRemoves().size(); i++) {
                                     /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
-                                    HashMap<String, String> params2 = new HashMap<String, String>();
-                                    params2.put("function", "remove_image");
-                                    params2.put("id", String.valueOf(imagesFragment.getRemoteRemoves().get(i)));
-                                    app.getHttpService().callPHP(params2, new HTTPService.OnResponseCallback<JSONObject>() {
+                                    HashMap<String, String> params = new HashMap<String, String>();
+                                    params.put("function", "edit_accident");
+                                    params.put("aid", String.valueOf(aid));
+                                    params.put("officer_id", officerId);
+                                    params.put("title", title);
+                                    params.put("status", String.valueOf(status));
+                                    params.put("type_id", String.valueOf(typeId));
+                                    params.put("location_x", String.valueOf(locationX));
+                                    params.put("location_y", String.valueOf(locationY));
+                                    params.put("status", String.valueOf(status));
+
+                                    app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
                                         @Override
                                         public void onResponse(boolean success, Throwable error, JSONObject data) {
                                             if (data != null) {
+
+                                                for (int i = 0; i < imagesFragment.getRemoteRemoves().size(); i++) {
+                                                    /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
+                                                    HashMap<String, String> params2 = new HashMap<String, String>();
+                                                    params2.put("function", "remove_image");
+                                                    params2.put("id", String.valueOf(imagesFragment.getRemoteRemoves().get(i)));
+                                                    app.getHttpService().callPHP(params2, new HTTPService.OnResponseCallback<JSONObject>() {
+                                                        @Override
+                                                        public void onResponse(boolean success, Throwable error, JSONObject data) {
+                                                            if (data != null) {
+                                                                try {
+                                                                    String id = data.getString("id");
+                                                                    app.getHttpService().upload(imageUris, id);
+
+                                                                    Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                                                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                                    startActivity(intent);
+                                                                    finish();
+
+
+                                                                } catch (JSONException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+
+
                                                 try {
                                                     String id = data.getString("id");
                                                     app.getHttpService().upload(imageUris, id);
@@ -218,27 +247,10 @@ public class AddActivity extends AppCompatActivity {
                                         }
                                     });
                                 }
+                            })
+                            .setNegativeButton(R.string.update_no_confirm, null).show();
 
-
-                                try {
-                                    String id = data.getString("id");
-                                    app.getHttpService().upload(imageUris, id);
-
-                                    Intent intent = new Intent(getApplicationContext(), ListActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
-
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    });
                 }
-
             }
         });
 
