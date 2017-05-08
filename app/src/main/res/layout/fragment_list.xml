@@ -6,12 +6,34 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <SearchView
-        android:id="@+id/search"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4px"
-        android:background="#eeffff"/>
+        android:orientation="horizontal">
+
+        <SearchView
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4px"
+            android:layout_toLeftOf="@+id/imageViewDatePicker"
+            android:layout_toStartOf="@+id/imageViewDatePicker"
+            android:background="#eeffff" />
+
+        <ImageView
+            android:id="@+id/imageViewDatePicker"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/search"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_calendar"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/listView"

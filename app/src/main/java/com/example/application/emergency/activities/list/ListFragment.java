@@ -1,18 +1,26 @@
 package com.example.application.emergency.activities.list;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.example.application.emergency.R;
+import com.example.application.emergency.activities.SummaryActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
@@ -22,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -36,6 +46,9 @@ public class ListFragment extends Fragment {
     public static final String KEY_STATUS = "KEY_STATUS";
 
     private SearchView searchView;
+    private ImageView imageViewDatePicker;
+    private Dialog dialogDatePicker;
+
     private ListView listView;
 
     public static ListFragment getInstance(int status) {
@@ -72,15 +85,76 @@ public class ListFragment extends Fragment {
                 searchView.setIconified(false);
             }
         });
-//        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean b) {
-//                Log.d("focus", b + "  " + view.toString());
-//                if (!b) {
-//                    hideKeyboard(view);
-//                }
-//            }
-//        });
+
+        dialogDatePicker = new Dialog(getActivity());
+        dialogDatePicker.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogDatePicker.setContentView(R.layout.dialog_datepicker_fragment_list);
+        dialogDatePicker.setCancelable(true);
+
+        final DatePicker datePickerFrom = (DatePicker) dialogDatePicker.findViewById(R.id.datePickerFrom);
+        datePickerFrom.setMaxDate(new Date().getTime());
+
+        final DatePicker datePickerTo = (DatePicker) dialogDatePicker.findViewById(R.id.datePickerTo);
+        datePickerTo.setMaxDate(new Date().getTime());
+
+        final CheckBox checkBox = (CheckBox) dialogDatePicker.findViewById(R.id.checkBox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    Calendar c = Calendar.getInstance();
+                    datePickerFrom.setEnabled(false);
+                    datePickerTo.setEnabled(false);
+                    datePickerFrom.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+                    datePickerTo.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+                }
+                else {
+                    datePickerFrom.setEnabled(true);
+                    datePickerTo.setEnabled(true);
+                }
+            }
+        });
+
+        Button buttonCancel = (Button) dialogDatePicker.findViewById(R.id.buttonCancel);
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dialogDatePicker.dismiss();
+            }
+        });
+
+        Button buttonOK = (Button) dialogDatePicker.findViewById(R.id.buttonOK);
+        buttonOK.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dialogDatePicker.dismiss();
+
+                if (checkBox.isChecked()) {
+                    loadList();
+                }
+                else {
+                    Calendar from = Calendar.getInstance();
+                    from.set(Calendar.YEAR, datePickerFrom.getYear());
+                    from.set(Calendar.MONTH, datePickerFrom.getMonth());
+                    from.set(Calendar.DAY_OF_MONTH, datePickerFrom.getDayOfMonth());
+
+                    Calendar to = Calendar.getInstance();
+                    to.set(Calendar.YEAR, datePickerTo.getYear());
+                    to.set(Calendar.MONTH, datePickerTo.getMonth());
+                    to.set(Calendar.DAY_OF_MONTH, datePickerTo.getDayOfMonth());
+
+                    loadList(from, to);
+                }
+            }
+        });
+
+        imageViewDatePicker = (ImageView) v.findViewById(R.id.imageViewDatePicker);
+        imageViewDatePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("DIALOG", "licked");
+
+                dialogDatePicker.show();
+            }
+        });
 
         listView = (ListView) v.findViewById(R.id.listView);
 
@@ -98,11 +172,24 @@ public class ListFragment extends Fragment {
 
     /** ฟังก์ชั่นสำหรับดาวน์โหลดรายการการแจ้งเหตุจาก server **/
     public void loadList() {
+        Calendar from = Calendar.getInstance();
+        from.set(Calendar.YEAR, 1);
+        from.set(Calendar.MONTH, 0);
+        from.set(Calendar.DAY_OF_MONTH, 1990);
+
+        Calendar to = Calendar.getInstance();
+
+        loadList(from, to);
+    }
+
+    public void loadList(Calendar from, Calendar to) {
         /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("function", "get_accidents");
         params.put("status", Integer.toString(status));
         params.put("search", String.valueOf(searchView.getQuery()));
+        params.put("from", EmergencyApplication.SQLSDF_REAL.format(from.getTime()));
+        params.put("to", EmergencyApplication.SQLSDF_REAL.format(to.getTime()));
         if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
             String phone = app.getPreferences().getString(Preferences.KEY_PHONE);
             if (phone == null || phone.equals("")) {

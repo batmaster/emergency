@@ -2,10 +2,10 @@
 -- version 4.0.10deb1
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Apr 29, 2017 at 03:14 PM
--- Server version: 5.5.50-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.21
+-- โฮสต์: localhost
+-- เวลาในการสร้าง: 09 พ.ค. 2017  03:42น.
+-- เวอร์ชั่นของเซิร์ฟเวอร์: 5.5.50-0ubuntu0.14.04.1
+-- รุ่นของ PHP: 5.5.9-1ubuntu4.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `foundation`
+-- ฐานข้อมูล: `foundation`
 --
 CREATE DATABASE IF NOT EXISTS `foundation` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `foundation`;
@@ -25,10 +25,9 @@ USE `foundation`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `accident`
+-- โครงสร้างตาราง `accident`
 --
 
-DROP TABLE IF EXISTS `accident`;
 CREATE TABLE IF NOT EXISTS `accident` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `type_id` int(10) NOT NULL,
@@ -40,43 +39,41 @@ CREATE TABLE IF NOT EXISTS `accident` (
   `status` int(1) NOT NULL,
   `date` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=77 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=119 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `accident_image`
+-- โครงสร้างตาราง `accident_image`
 --
 
-DROP TABLE IF EXISTS `accident_image`;
 CREATE TABLE IF NOT EXISTS `accident_image` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `accident_id` int(10) NOT NULL,
   `image` varchar(256) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=58 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `accident_type`
+-- โครงสร้างตาราง `accident_type`
 --
 
-DROP TABLE IF EXISTS `accident_type`;
 CREATE TABLE IF NOT EXISTS `accident_type` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `title` varchar(20) NOT NULL,
   `color` varchar(7) NOT NULL,
+  `image` varchar(256) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `officer`
+-- โครงสร้างตาราง `officer`
 --
 
-DROP TABLE IF EXISTS `officer`;
 CREATE TABLE IF NOT EXISTS `officer` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,

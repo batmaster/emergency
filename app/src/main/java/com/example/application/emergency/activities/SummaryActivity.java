@@ -44,9 +44,6 @@ public class SummaryActivity extends AppCompatActivity {
     /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private EmergencyApplication app;
 
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy MMMM");
-    private static final SimpleDateFormat SQLSDF = new SimpleDateFormat("yyyy-MM-01 00:00:00");
-
     private TextView textViewDate;
     private ImageView imageViewDatePicker;
     private DatePicker datePicker;
@@ -78,7 +75,7 @@ public class SummaryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 dialog.dismiss();
 
-                final Calendar calendar = Calendar.getInstance();
+                Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.YEAR, datePicker.getYear());
                 calendar.set(Calendar.MONTH, datePicker.getMonth());
 
@@ -93,7 +90,7 @@ public class SummaryActivity extends AppCompatActivity {
         textViewDate = (TextView) findViewById(R.id.textViewDate);
 
         Calendar calendar = Calendar.getInstance();
-        textViewDate.setText(SDF.format(calendar.getTime()));
+        textViewDate.setText(app.SDF.format(calendar.getTime()));
 
 
         imageViewDatePicker = (ImageView) findViewById(R.id.imageViewDatePicker);
@@ -110,7 +107,7 @@ public class SummaryActivity extends AppCompatActivity {
 
     /** ฟังก์ชั่นสำหรับดาวน์โหลดรายการการแจ้งเหตุจาก server **/
     private void loadChart(final Calendar calendar) {
-        textViewDate.setText(SDF.format(calendar.getTime()));
+        textViewDate.setText(app.SDF.format(calendar.getTime()));
 
         /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
         HashMap<String, String> params = new HashMap<String, String>();
@@ -138,7 +135,7 @@ public class SummaryActivity extends AppCompatActivity {
                         /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("function", "summary_accidents");
-                        params.put("date", SQLSDF.format(calendar.getTime()));
+                        params.put("date", app.SQLSDF.format(calendar.getTime()));
                         app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
                             @Override
                             public void onResponse(boolean success, Throwable error, JSONObject data) {

@@ -77,6 +77,8 @@
             $status = $_POST["status"];
             $search = $_POST["search"];
             $phone = $_POST["phone"];
+            $from = $_POST["from"];
+            $to = $_POST["to"];
 
             $url = 'http://'. $_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'] . "/";
 
@@ -84,6 +86,7 @@
                 FROM accident a, accident_type at
                 WHERE a.type_id = at.id AND a.status = $status AND a.phone LIKE '%$phone%'
                 AND (at.title LIKE '%$search%' OR a.title LIKE '%$search%' OR a.phone LIKE '%$search%')
+                AND DATE('$from') <= DATE(a.date) AND DATE(a.date) <= DATE('$to')
                 ORDER BY a.date DESC"));
         }
         else if ($function == "get_accident") {
