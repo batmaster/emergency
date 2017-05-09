@@ -12,8 +12,7 @@ import java.util.Map;
 public class Preferences {
 
     /** ประกาศตัวแปร **/
-    public static final String KEY_OFFICER_ID = "KEY_OFFICER_ID";
-    public static final String KEY_PHONE = "KEY_PHONE";
+    public static final String KEY_USER_TYPE = "KEY_USER_TYPE";
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
 

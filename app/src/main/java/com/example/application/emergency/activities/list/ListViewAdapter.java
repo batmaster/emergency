@@ -19,9 +19,18 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.add.AddActivity;
+import com.example.application.emergency.services.EmergencyApplication;
+import com.example.application.emergency.services.Preferences;
 import com.example.application.emergency.services.ReadableTime;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -87,11 +96,44 @@ public class ListViewAdapter extends BaseAdapter {
         TextView textViewTime = (TextView) view.findViewById(R.id.textViewTime);
         textViewTime.setText(ReadableTime.get(list.get(i).getDate()));
 
-        TextView textViewPeople = (TextView) view.findViewById(R.id.textViewPeople);
-        textViewPeople.setText(list.get(i).getPhone());
-
         TextView textViewTimeReal = (TextView) view.findViewById(R.id.textViewTimeReal);
         textViewTimeReal.setText(list.get(i).getDate());
+
+        TextView textViewTimeApprove = (TextView) view.findViewById(R.id.textViewTimeApprove);
+        textViewTimeApprove.setText(list.get(i).getDateApprove());
+
+        final TextView textViewPeople = (TextView) view.findViewById(R.id.textViewPeople);
+        final TextView textViewOfficer = (TextView) view.findViewById(R.id.textViewOfficer);
+
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(), "/" + list.get(i).getUserId(), null, HttpMethod.GET, new GraphRequest.Callback() {
+            public void onCompleted(GraphResponse response) {
+                try {
+                    textViewPeople.setText(response.getJSONObject().getString("name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        ).executeAsync();
+
+        if (list.get(i).getStatus() > 0) {
+            new GraphRequest(
+                    AccessToken.getCurrentAccessToken(), "/" + list.get(i).getOfficerId(), null, HttpMethod.GET, new GraphRequest.Callback() {
+                public void onCompleted(GraphResponse response) {
+                    try {
+                        textViewOfficer.setText("รับโดย " + response.getJSONObject().getString("name"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            ).executeAsync();
+        }
+        else {
+            textViewOfficer.setVisibility(View.GONE);
+            textViewTimeApprove.setVisibility(View.GONE);
+        }
 
         view.setBackgroundColor(Color.parseColor(list.get(i).getColor()));
 

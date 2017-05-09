@@ -3,6 +3,8 @@ package com.example.application.emergency.services;
 import android.app.Application;
 import android.telephony.TelephonyManager;
 
+import com.facebook.CallbackManager;
+
 import java.text.SimpleDateFormat;
 
 /**
@@ -14,7 +16,7 @@ public class EmergencyApplication extends Application {
     private HTTPService httpService;
     private Preferences preferences;
 
-    private TelephonyManager tm;
+    private CallbackManager callbackManager;
 
     public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy MMMM");
     public static final SimpleDateFormat SQLSDF = new SimpleDateFormat("yyyy-MM-01 00:00:00");
@@ -24,11 +26,10 @@ public class EmergencyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        callbackManager = CallbackManager.Factory.create();
 
         httpService = new HTTPService(this);
         preferences = new Preferences(this);
-
-        tm = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
     }
 
     /** ฟังก์ชั่นสำหรับเรียกใช้ตัวแปรใน class **/
@@ -40,7 +41,7 @@ public class EmergencyApplication extends Application {
         return preferences;
     }
 
-    public String getPhoneNumber() {
-        return tm.getLine1Number();
+    public CallbackManager getFacebookCallbackManager() {
+        return callbackManager;
     }
 }

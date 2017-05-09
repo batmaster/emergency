@@ -9,13 +9,6 @@
         app:showAsAction="withText"/>
 
     <item
-        android:id="@+id/menuClear"
-        android:title="ลบหมายเลขโทรศัพท์"
-        android:icon="@drawable/ic_cancel"
-        android:orderInCategory="2"
-        app:showAsAction="withText"/>
-
-    <item
         android:id="@+id/menuLogout"
         android:title="ออกจากระบบ"
         android:icon="@drawable/ic_logout"

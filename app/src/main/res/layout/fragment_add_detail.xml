@@ -18,50 +18,94 @@
         android:layout_height="80dp"
         android:maxLength="1024"/>
 
-    <TextView
-        android:text="ประเภท"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Spinner
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner" />
+        android:orientation="horizontal"
+        android:weightSum="100">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:id="@+id/layoutStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:text="สถานะ"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <RadioGroup
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:id="@+id/layoutDetail"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
+            android:layout_weight="60"
+            android:orientation="vertical">
+            <TextView
+                android:text="ประเภท"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/layoutStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="สถานะ"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <RadioGroup
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/radioStatus0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="เหตุการณ์ใหม่" />
+
+                    <RadioButton
+                        android:id="@+id/radioStatus1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="เหตุกำลังดำเนินการ" />
+
+                    <RadioButton
+                        android:id="@+id/radioStatus2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="เหตุเสร็จสิ้น" />
+                </RadioGroup>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutPeople"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="40"
             android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/radioStatus0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="เหตุการณ์ใหม่" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <RadioButton
-                android:id="@+id/radioStatus1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="เหตุกำลังดำเนินการ" />
+                <ImageView
+                    android:id="@+id/imageViewPeople"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-            <RadioButton
-                android:id="@+id/radioStatus2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="เหตุเสร็จสิ้น" />
-        </RadioGroup>
+                <TextView
+                    android:id="@+id/textViewPeople"
+                    android:gravity="center"
+                    android:layout_alignParentBottom="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ccccaa"
+                    android:text="People"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <Button

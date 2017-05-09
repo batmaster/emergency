@@ -3,6 +3,7 @@ package com.example.application.emergency.activities.add;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -15,16 +16,26 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.list.ListActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -58,6 +69,10 @@ public class DetailFragment extends Fragment {
     private RadioButton radioStatus1;
     private RadioButton radioStatus2;
     private Button buttonDelete;
+
+    private LinearLayout layoutDetail;
+    private TextView textViewPeople;
+    private ImageView imageViewPeople;
 
     private MapFragment mapFragment;
 
@@ -124,6 +139,10 @@ public class DetailFragment extends Fragment {
         });
 
         mapFragment = (MapFragment) getActivity().getFragmentManager().findFragmentById(R.id.map);
+
+        layoutDetail = (LinearLayout) v.findViewById(R.id.layoutDetail);
+        imageViewPeople = (ImageView) v.findViewById(R.id.imageViewPeople);
+        textViewPeople = (TextView) v.findViewById(R.id.textViewPeople);
 
         /** ซ่่อน component ที่ไม่ได้ใช้งาน ขณะผู้ใช้เพิ่มรายการใหม่ **/
         if (aid == -1) {
@@ -194,6 +213,10 @@ public class DetailFragment extends Fragment {
                     });
                 }
             });
+
+                LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) layoutDetail.getLayoutParams();
+                p.weight = 100f;
+                layoutDetail.setLayoutParams(p);
         }
         /** ซ่่อน component ที่ไม่ได้ใช้งาน หากเป็นการแก้ไขรายการ **/
         else {
@@ -214,6 +237,58 @@ public class DetailFragment extends Fragment {
 
                             editTextTitle.setText(o.getString("title"));
                             setStatus(o.getInt("status"));
+
+                            imageViewPeople.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    try {
+                                        PackageInfo info = getActivity().getPackageManager().getPackageInfo("com.facebook.orca", PackageManager.GET_META_DATA);
+                                        Intent appIntent = new Intent(Intent.ACTION_SEND);
+                                        appIntent.setType("text/plain");
+                                        appIntent.putExtra(Intent.EXTRA_TEXT, "http://batmasterio.com:8888/emergency.php?id=" + o.getString("id"));
+                                        appIntent.putExtra(Intent.EXTRA_SUBJECT, "ได้รับแจ้งเหตุ " + o.getString("title"));
+                                        appIntent.setPackage("com.facebook.orca");
+                                        startActivity(Intent.createChooser(appIntent, "ส่งรายการแจ้งเหตุ"));
+                                    }
+                                    catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    catch (PackageManager.NameNotFoundException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(getContext(), "ไม่พบแอพพลิเคชั่น Messenger", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+                            Toast.makeText(getContext(), "คลิกที่รูปภาพผู้ใช้งานเพื่อติดต่อ", Toast.LENGTH_SHORT).show();
+
+                            Bundle p = new Bundle();
+                            p.putString("fields", "name, picture.type(large)");
+                            new GraphRequest(
+                                    AccessToken.getCurrentAccessToken(), "/" + o.getString("user_id"), p, HttpMethod.GET, new GraphRequest.Callback() {
+                                public void onCompleted(GraphResponse response) {
+                                    try {
+                                        textViewPeople.setText(response.getJSONObject().getString("name"));
+
+                                        Glide.with(getContext()).load(response.getJSONObject().getJSONObject("picture").getJSONObject("data").getString("url")).listener(new RequestListener<String, GlideDrawable>() {
+                                            @Override
+                                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                                e.printStackTrace();
+
+                                                return false;
+                                            }
+
+                                            @Override
+                                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                                return false;
+                                            }
+                                        }).fitCenter().placeholder(R.drawable.placeholder).into(imageViewPeople);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            ).executeAsync();
 
                             /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
                             HashMap<String, String> params = new HashMap<String, String>();
@@ -296,11 +371,17 @@ public class DetailFragment extends Fragment {
                             e.printStackTrace();
                         }
                     }
+
+                    if (app.getPreferences().getString(Preferences.KEY_USER_TYPE).equals("0")) {
+                        LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) layoutDetail.getLayoutParams();
+                        p.weight = 100f;
+                        layoutDetail.setLayoutParams(p);
+                    }
                 }
             });
 
             /** ซ่อน component สถานะ หากไม่ใช่เจ้าหน้าที่ **/
-            if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
+            if (app.getPreferences().getString(Preferences.KEY_USER_TYPE).equals("0")) {
                 setStatusEnable(false);
             }
         }
@@ -338,7 +419,7 @@ public class DetailFragment extends Fragment {
         radioStatus1.setChecked(status == 1);
         radioStatus2.setChecked(status == 2);
 
-        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
+        if (app.getPreferences().getString(Preferences.KEY_USER_TYPE).equals("0")) {
             radioStatus0.setVisibility(status != 0 ? View.GONE : View.VISIBLE);
             radioStatus1.setVisibility(status != 1 ? View.GONE : View.VISIBLE);
             radioStatus2.setVisibility(status != 2 ? View.GONE : View.VISIBLE);

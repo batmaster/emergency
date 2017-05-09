@@ -9,6 +9,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,7 +22,21 @@ import com.example.application.emergency.R;
 import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.activities.list.ListActivity;
 import com.example.application.emergency.services.EmergencyApplication;
+import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * class แสดงผล activity หน้าแรก
@@ -32,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private EmergencyApplication app;
 
     private Button buttonAdd;
-    private Button buttonOfficer;
     private Button buttonList;
 
     @Override
@@ -47,21 +61,11 @@ public class MainActivity extends AppCompatActivity {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkPermission()) {
-                    startActivity(new Intent(MainActivity.this, AddActivity.class));
-                    finish();
+                if (checkPermission(199)) {
+                    goTo(AddActivity.class);
                 }
-            }
-        });
 
-        buttonOfficer = (Button) findViewById(R.id.buttonOfficer);
-        buttonOfficer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkPermission()) {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
-                }
+
             }
         });
 
@@ -69,27 +73,17 @@ public class MainActivity extends AppCompatActivity {
         buttonList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkPermission()) {
-                    startActivity(new Intent(MainActivity.this, ListActivity.class));
-                    finish();
+                if (checkPermission(200)) {
+                    goTo(ListActivity.class);
                 }
             }
         });
-
-        /** เปลี่ยนหน้าไปหน้า list หากมีบันทึก id ของ officer ไว้ **/
-        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) != null) {
-            buttonOfficer.setVisibility(View.GONE);
-
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) buttonList.getLayoutParams();
-            params.weight = 100f;
-            buttonList.setLayoutParams(params);
-        }
     }
 
     /** ฟังก์ชั่นของระบบแอนดรอยด์ สำหรับเรียกใช้หลังการกลับจาก process อื่น **/
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if (requestCode == 199) {
+        if (requestCode == 199 || requestCode == 200) {
             for (int i = 0; i < grantResults.length; i++) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getApplicationContext(), "กรุณาอนุมัติการเข้าถึง", Toast.LENGTH_SHORT).show();
@@ -97,11 +91,12 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
             }
+            goTo(requestCode == 199 ? AddActivity.class : ListActivity.class);
         }
     }
 
     /** ฟังก์ชั่นสำหรับตรวจสอบการอนุญาติใช้งาน กล้อง ตำแหน่งปัจจุบัน การเขียนอ่านไฟล์ลงในเครื่อง การอ่านข้อมูลโทรศัพท์ **/
-    private boolean checkPermission() {
+    private boolean checkPermission(int requestCode) {
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
@@ -124,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                         Manifest.permission.CAMERA,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_PHONE_STATE,}, 199);
+                        Manifest.permission.READ_PHONE_STATE,}, requestCode);
                 return false;
             }
         }
@@ -143,13 +138,6 @@ public class MainActivity extends AppCompatActivity {
     /** ตั้งค่าปุ่มเมนูในหน้า activity **/
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (app.getPreferences().getString(Preferences.KEY_PHONE) == null ) {
-            menu.removeItem(R.id.menuClear);
-        }
-        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null ) {
-            menu.removeItem(R.id.menuLogout);
-        }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -167,18 +155,63 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menuSummary:
                 startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
                 break;
-            case R.id.menuClear:
-                app.getPreferences().removeString(Preferences.KEY_PHONE);
-                Toast.makeText(getApplicationContext(), "ลบหมายเลขโทรศัพท์เรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
-                invalidateOptionsMenu();
-                break;
             case R.id.menuLogout:
-                app.getPreferences().removeString(Preferences.KEY_OFFICER_ID);
-                app.getPreferences().removeString(Preferences.KEY_PHONE);
+                LoginManager.getInstance().logOut();
+                app.getPreferences().removeString(Preferences.KEY_USER_TYPE);
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
                 break;
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        app.getFacebookCallbackManager().onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void goTo(final Class c) {
+        if (AccessToken.getCurrentAccessToken() == null) {
+            LoginManager.getInstance().logInWithReadPermissions(MainActivity.this, Arrays.asList("public_profile"));
+            LoginManager.getInstance().registerCallback(app.getFacebookCallbackManager(), new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    HashMap<String, String> params2 = new HashMap<String, String>();
+                    params2.put("function", "check_user");
+                    params2.put("user_id", Profile.getCurrentProfile().getId());
+                    app.getHttpService().callPHP(params2, new HTTPService.OnResponseCallback<JSONObject>() {
+                        @Override
+                        public void onResponse(boolean success, Throwable error, JSONObject data) {
+                            if (data != null) {
+                                try {
+                                    app.getPreferences().putString(Preferences.KEY_USER_TYPE, data.getString("type"));
+
+                                    startActivity(new Intent(MainActivity.this, c));
+                                    finish();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancel() {
+
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    Log.d("fbb", error.getMessage());
+                }
+            });
+
+        }
+        else {
+            startActivity(new Intent(MainActivity.this, c));
+            finish();
+        }
     }
 }

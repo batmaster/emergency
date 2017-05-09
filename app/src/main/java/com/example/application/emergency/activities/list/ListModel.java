@@ -10,25 +10,29 @@ public class ListModel {
     private int typeId;
     private String type;
     private String title;
-    private String phone;
+    private String userId;
+    private String officerId;
     private double locationX;
     private double locationY;
     private int status;
     private String date;
+    private String dateApprove;
 
     private String color;
     private String typeImage;
 
-    public ListModel(int id, int typeId, String type, String title, String phone, double locationX, double locationY, int status, String date, String color, String typeImage) {
+    public ListModel(int id, int typeId, String type, String title, String userId, String officerId, double locationX, double locationY, int status, String date, String dateApprove, String color, String typeImage) {
         this.id = id;
         this.typeId = typeId;
         this.type = type;
         this.title = title;
-        this.phone = phone;
+        this.userId = userId;
+        this.officerId = officerId;
         this.locationX = locationX;
         this.locationY = locationY;
         this.status = status;
         this.date = date;
+        this.dateApprove = dateApprove;
         this.color = color;
         this.typeImage = typeImage;
     }
@@ -65,12 +69,20 @@ public class ListModel {
         this.title = title;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getOfficerId() {
+        return officerId;
+    }
+
+    public void setOfficerId(String officerId) {
+        this.officerId = officerId;
     }
 
     public double getLocationX() {
@@ -103,6 +115,14 @@ public class ListModel {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getDateApprove() {
+        return dateApprove;
+    }
+
+    public void setDateApprove(String dateApprove) {
+        this.dateApprove = dateApprove;
     }
 
     public String getColor() {

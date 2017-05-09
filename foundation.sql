@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- โฮสต์: localhost
--- เวลาในการสร้าง: 09 พ.ค. 2017  03:42น.
+-- เวลาในการสร้าง: 10 พ.ค. 2017  05:07น.
 -- เวอร์ชั่นของเซิร์ฟเวอร์: 5.5.50-0ubuntu0.14.04.1
 -- รุ่นของ PHP: 5.5.9-1ubuntu4.21
 
@@ -28,18 +28,20 @@ USE `foundation`;
 -- โครงสร้างตาราง `accident`
 --
 
+DROP TABLE IF EXISTS `accident`;
 CREATE TABLE IF NOT EXISTS `accident` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `type_id` int(10) NOT NULL,
   `title` varchar(64) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `officer_id` int(10) NOT NULL,
+  `user_id` varchar(32) NOT NULL,
+  `officer_id` varchar(32) NOT NULL,
   `location_x` varchar(20) NOT NULL,
   `location_y` varchar(20) NOT NULL,
   `status` int(1) NOT NULL,
   `date` varchar(20) NOT NULL,
+  `date_approve` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=119 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=121 ;
 
 -- --------------------------------------------------------
 
@@ -47,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `accident` (
 -- โครงสร้างตาราง `accident_image`
 --
 
+DROP TABLE IF EXISTS `accident_image`;
 CREATE TABLE IF NOT EXISTS `accident_image` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `accident_id` int(10) NOT NULL,
@@ -60,6 +63,7 @@ CREATE TABLE IF NOT EXISTS `accident_image` (
 -- โครงสร้างตาราง `accident_type`
 --
 
+DROP TABLE IF EXISTS `accident_type`;
 CREATE TABLE IF NOT EXISTS `accident_type` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `title` varchar(20) NOT NULL,
@@ -71,16 +75,15 @@ CREATE TABLE IF NOT EXISTS `accident_type` (
 -- --------------------------------------------------------
 
 --
--- โครงสร้างตาราง `officer`
+-- โครงสร้างตาราง `user`
 --
 
-CREATE TABLE IF NOT EXISTS `officer` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL,
-  `username` varchar(20) NOT NULL,
-  `password` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE IF NOT EXISTS `user` (
+  `user_id` varchar(32) NOT NULL,
+  `type` int(1) NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

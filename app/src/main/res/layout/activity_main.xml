@@ -51,40 +51,16 @@
         android:layout_weight="20">
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="15"
-        android:orientation="horizontal"
-        android:weightSum="100" >
-
-        <Button
-            android:id="@+id/buttonOfficer"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="50"
-            android:background="#DCDCDC"
-            android:text="เจ้าหน้าที่" />
-
-        <Button
-            android:id="@+id/buttonList"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="50"
-            android:background="#DCDCDC"
-            android:text="การแจ้งเหตุ" />
-
-
-    </LinearLayout>
-
-
+    <Button
+        android:id="@+id/buttonList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:background="#DCDCDC"
+        android:padding="20dp"
+        android:text="รายการแจ้งเหตุ" />
 
 </LinearLayout>

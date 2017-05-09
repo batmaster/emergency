@@ -24,6 +24,7 @@ import com.example.application.emergency.activities.list.ListModel;
 import com.example.application.emergency.components.DeletableImageView;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
+import com.example.application.emergency.services.Preferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -174,6 +175,13 @@ public class ImagesFragment extends Fragment {
             }
         });
 
+        setEdittingMode(false);
+//        if (app.getPreferences().getString(Preferences.KEY_USER_TYPE).equals("1")) {
+//            imageViewCamera.setVisibility(View.GONE);
+//            imageViewAlbum.setVisibility(View.GONE);
+//            imageViewDelete.setVisibility(View.GONE);
+//        }
+
         return v;
     }
 
@@ -214,8 +222,6 @@ public class ImagesFragment extends Fragment {
                 Glide.with(getContext()).load(imageUri).fitCenter().into(imageView);
             }
         });
-
-        setEdittingMode(false);
 
         return deletableImageView;
     }

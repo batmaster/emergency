@@ -24,6 +24,7 @@ import com.example.application.emergency.activities.SummaryActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
+import com.facebook.AccessToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -190,15 +191,8 @@ public class ListFragment extends Fragment {
         params.put("search", String.valueOf(searchView.getQuery()));
         params.put("from", EmergencyApplication.SQLSDF_REAL.format(from.getTime()));
         params.put("to", EmergencyApplication.SQLSDF_REAL.format(to.getTime()));
-        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null) {
-            String phone = app.getPreferences().getString(Preferences.KEY_PHONE);
-            if (phone == null || phone.equals("")) {
-                phone = app.getPhoneNumber();
-            }
-            if (phone.equals("")) {
-                phone = "x";
-            }
-            params.put("phone", phone);
+        if (app.getPreferences().getString(Preferences.KEY_USER_TYPE).equals("0")) {
+            params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
         }
         app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
             @Override
@@ -216,11 +210,13 @@ public class ListFragment extends Fragment {
                                     o.getInt("type_id"),
                                     o.getString("type"),
                                     o.getString("title"),
-                                    o.getString("phone"),
+                                    o.getString("user_id"),
+                                    o.getString("officer_id"),
                                     o.getDouble("location_x"),
                                     o.getDouble("location_y"),
                                     o.getInt("status"),
                                     o.getString("date"),
+                                    o.getString("date_approve"),
                                     o.getString("color"),
                                     o.getString("type_image")
                             ));

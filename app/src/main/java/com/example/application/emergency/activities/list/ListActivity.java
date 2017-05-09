@@ -19,6 +19,7 @@ import com.example.application.emergency.activities.SummaryActivity;
 import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.Preferences;
+import com.facebook.login.LoginManager;
 
 /**
  * class แสดงผล activity หน้ารายการการแจ้งเหตุ
@@ -87,10 +88,7 @@ public class ListActivity extends AppCompatActivity {
     /** ตั้งค่าปุ่มเมนูในหน้า activity **/
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (app.getPreferences().getString(Preferences.KEY_PHONE) == null ) {
-            menu.removeItem(R.id.menuClear);
-        }
-        if (app.getPreferences().getString(Preferences.KEY_OFFICER_ID) == null ) {
+        if (app.getPreferences().getString(Preferences.KEY_USER_TYPE) == null) {
             menu.removeItem(R.id.menuLogout);
         }
 
@@ -111,16 +109,9 @@ public class ListActivity extends AppCompatActivity {
             case R.id.menuSummary:
                 startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
                 break;
-            case R.id.menuClear:
-                app.getPreferences().removeString(Preferences.KEY_PHONE);
-                Toast.makeText(getApplicationContext(), "ลบหมายเลขโทรศัพท์เรียบร้อยแล้ว", Toast.LENGTH_SHORT).show();
-                invalidateOptionsMenu();
-                finish();
-                startActivity(new Intent(getApplicationContext(), ListActivity.class));
-                break;
             case R.id.menuLogout:
-                app.getPreferences().removeString(Preferences.KEY_OFFICER_ID);
-                app.getPreferences().removeString(Preferences.KEY_PHONE);
+                LoginManager.getInstance().logOut();
+                app.getPreferences().removeString(Preferences.KEY_USER_TYPE);
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
                 break;
