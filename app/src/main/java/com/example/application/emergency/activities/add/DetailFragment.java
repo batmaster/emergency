@@ -260,7 +260,6 @@ public class DetailFragment extends Fragment {
 
                                 }
                             });
-                            Toast.makeText(getContext(), "คลิกที่รูปภาพผู้ใช้งานเพื่อติดต่อ", Toast.LENGTH_SHORT).show();
 
                             Bundle p = new Bundle();
                             p.putString("fields", "name, picture.type(large)");
@@ -376,6 +375,9 @@ public class DetailFragment extends Fragment {
                         LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) layoutDetail.getLayoutParams();
                         p.weight = 100f;
                         layoutDetail.setLayoutParams(p);
+                    }
+                    else {
+                        Toast.makeText(getContext(), "คลิกที่รูปภาพผู้ใช้งานเพื่อติดต่อ", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
