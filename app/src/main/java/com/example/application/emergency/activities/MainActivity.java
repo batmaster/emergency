@@ -28,6 +28,9 @@ import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -177,24 +180,37 @@ public class MainActivity extends AppCompatActivity {
             LoginManager.getInstance().registerCallback(app.getFacebookCallbackManager(), new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
-                    HashMap<String, String> params2 = new HashMap<String, String>();
+                    final HashMap<String, String> params2 = new HashMap<String, String>();
                     params2.put("function", "check_user");
-                    params2.put("user_id", Profile.getCurrentProfile().getId());
-                    app.getHttpService().callPHP(params2, new HTTPService.OnResponseCallback<JSONObject>() {
-                        @Override
-                        public void onResponse(boolean success, Throwable error, JSONObject data) {
-                            if (data != null) {
-                                try {
-                                    app.getPreferences().putString(Preferences.KEY_USER_TYPE, data.getString("type"));
-
-                                    startActivity(new Intent(MainActivity.this, c));
-                                    finish();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                    final String user_id = AccessToken.getCurrentAccessToken().getUserId();
+                    params2.put("user_id", user_id);
+                    new GraphRequest(
+                            AccessToken.getCurrentAccessToken(), "/" + user_id, null, HttpMethod.GET, new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse response) {
+                            try {
+                                params2.put("current_name", response.getJSONObject().getString("name"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+
+                            app.getHttpService().callPHP(params2, new HTTPService.OnResponseCallback<JSONObject>() {
+                                @Override
+                                public void onResponse(boolean success, Throwable error, JSONObject data) {
+                                    if (data != null) {
+                                        try {
+                                            app.getPreferences().putString(Preferences.KEY_USER_TYPE, data.getString("type"));
+
+                                            startActivity(new Intent(MainActivity.this, c));
+                                            finish();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
                         }
-                    });
+                    }
+                    ).executeAsync();
                 }
 
                 @Override

@@ -51,6 +51,16 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return position + 1;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return getCount() + 1;
+    }
+
+    @Override
     public int getCount() {
         return list.size();
     }
@@ -109,7 +119,11 @@ public class ListViewAdapter extends BaseAdapter {
                 AccessToken.getCurrentAccessToken(), "/" + list.get(i).getUserId(), null, HttpMethod.GET, new GraphRequest.Callback() {
             public void onCompleted(GraphResponse response) {
                 try {
-                    textViewPeople.setText(response.getJSONObject().getString("name"));
+                    String name = response.getJSONObject().getString("name");
+                    if (name.length() > 15) {
+                        name = name.substring(0, 15) + "...";
+                    }
+                    textViewPeople.setText(name);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -122,7 +136,11 @@ public class ListViewAdapter extends BaseAdapter {
                     AccessToken.getCurrentAccessToken(), "/" + list.get(i).getOfficerId(), null, HttpMethod.GET, new GraphRequest.Callback() {
                 public void onCompleted(GraphResponse response) {
                     try {
-                        textViewOfficer.setText("รับโดย " + response.getJSONObject().getString("name"));
+                        String name = "รับโดย " + response.getJSONObject().getString("name");
+                        if (name.length() > 15) {
+                            name = name.substring(0, 15) + "...";
+                        }
+                        textViewOfficer.setText(name);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

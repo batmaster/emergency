@@ -3,8 +3,10 @@ package com.example.application.emergency.services;
 import android.app.Application;
 import android.telephony.TelephonyManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.CallbackManager;
 
+import io.fabric.sdk.android.Fabric;
 import java.text.SimpleDateFormat;
 
 /**
@@ -26,6 +28,7 @@ public class EmergencyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         callbackManager = CallbackManager.Factory.create();
 
         httpService = new HTTPService(this);

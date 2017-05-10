@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- โฮสต์: localhost
--- เวลาในการสร้าง: 10 พ.ค. 2017  05:07น.
+-- เวลาในการสร้าง: 11 พ.ค. 2017  01:22น.
 -- เวอร์ชั่นของเซิร์ฟเวอร์: 5.5.50-0ubuntu0.14.04.1
 -- รุ่นของ PHP: 5.5.9-1ubuntu4.21
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `accident` (
   `date` varchar(20) NOT NULL,
   `date_approve` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=121 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=128 ;
 
 -- --------------------------------------------------------
 
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `accident_image` (
   `accident_id` int(10) NOT NULL,
   `image` varchar(256) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=58 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=60 ;
 
 -- --------------------------------------------------------
 
@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `accident_type` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `user_id` varchar(32) NOT NULL,
+  `current_name` varchar(64) NOT NULL,
   `type` int(1) NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

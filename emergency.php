@@ -63,12 +63,16 @@
         /******************** #user ********************/
         if ($function == "check_user") {
             $user_id = $_POST["user_id"];
+            $current_name = $_POST["current_name"];
 
             $user = sql("SELECT type FROM user WHERE user_id = '$user_id'", false);
             if (count($user["array"]) == 0 && !isset($user["type"])) {
                 sql("INSERT INTO user (user_id) VALUES ('$user_id')");
 
                 $user = sql("SELECT type FROM user WHERE user_id = '$user_id'", false);
+            }
+            else {
+                sql("UPDATE user SET current_name = '$current_name' WHERE user_id = '$user_id'");
             }
 
             echo json_encode($user);
