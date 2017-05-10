@@ -143,6 +143,7 @@ public class ListViewAdapter extends BaseAdapter {
                 Intent intent = new Intent(activity.getApplicationContext(), AddActivity.class);
                 intent.putExtra("aid", list.get(i).getId());
                 activity.startActivity(intent);
+                activity.finish();
             }
         });
 

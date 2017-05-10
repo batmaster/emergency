@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -93,6 +94,11 @@ public class AddActivity extends AppCompatActivity {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (detailFragment.getMarker() == null) {
+                    Toast.makeText(getApplicationContext(), "ไม่สามารถค้นหาตำแหน่งบนแผนที่ กรุณาเพิ่มตำแหน่ง", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (aid == -1) {
                     Toast.makeText(getApplicationContext(), "กำลังเพิ่มเหตุการณ์", Toast.LENGTH_SHORT).show();
