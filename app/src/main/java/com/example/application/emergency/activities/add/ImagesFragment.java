@@ -176,11 +176,10 @@ public class ImagesFragment extends Fragment {
         });
 
         setEdittingMode(false);
-//        if (app.getPreferences().getString(Preferences.KEY_USER_TYPE).equals("1")) {
-//            imageViewCamera.setVisibility(View.GONE);
-//            imageViewAlbum.setVisibility(View.GONE);
-//            imageViewDelete.setVisibility(View.GONE);
-//        }
+        if (aid != -1) {
+            imageViewCamera.setVisibility(View.GONE);
+            imageViewAlbum.setVisibility(View.GONE);
+        }
 
         return v;
     }

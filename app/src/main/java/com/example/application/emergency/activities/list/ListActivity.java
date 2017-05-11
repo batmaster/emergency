@@ -17,6 +17,7 @@ import com.example.application.emergency.R;
 import com.example.application.emergency.activities.MainActivity;
 import com.example.application.emergency.activities.SummaryActivity;
 import com.example.application.emergency.activities.add.AddActivity;
+import com.example.application.emergency.activities.officer.OfficerActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.Preferences;
 import com.facebook.login.LoginManager;
@@ -102,8 +103,16 @@ public class ListActivity extends AppCompatActivity {
 
         if (app.getPreferences().getString(Preferences.KEY_USER_TYPE) == null) {
             menu.removeItem(R.id.menuLogout);
+            menu.removeItem(R.id.menuUser);
         }
+        else {
+            if (Integer.parseInt(app.getPreferences().getString(Preferences.KEY_USER_TYPE)) < 2) {
+                menu.removeItem(R.id.menuUser);
+            }
+        }
+
         menu.removeItem(R.id.menuLogin);
+        menu.removeItem(R.id.menuMain);
 
         return true;
     }
@@ -113,6 +122,9 @@ public class ListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menuSummary:
                 startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
+                break;
+            case R.id.menuUser:
+                startActivity(new Intent(getApplicationContext(), OfficerActivity.class));
                 break;
             case R.id.menuLogout:
                 LoginManager.getInstance().logOut();

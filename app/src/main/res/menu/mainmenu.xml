@@ -9,15 +9,26 @@
         app:showAsAction="withText"/>
 
     <item
+        android:id="@+id/menuMain"
+        android:title="หน้าหลัก"
+        android:orderInCategory="2"
+        app:showAsAction="withText"/>
+
+    <item
+        android:id="@+id/menuUser"
+        android:title="รายการผู้ใช้"
+        android:orderInCategory="3"
+        app:showAsAction="withText"/>
+
+    <item
         android:id="@+id/menuLogin"
         android:title="เข้าสู่ระบบ"
-        android:orderInCategory="2"
+        android:orderInCategory="4"
         app:showAsAction="withText"/>
 
     <item
         android:id="@+id/menuLogout"
         android:title="ออกจากระบบ"
-        android:icon="@drawable/ic_logout"
-        android:orderInCategory="3"
+        android:orderInCategory="5"
         app:showAsAction="withText"/>
 </menu>

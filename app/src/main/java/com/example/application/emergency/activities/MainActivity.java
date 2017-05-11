@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.activities.list.ListActivity;
+import com.example.application.emergency.activities.officer.OfficerActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
@@ -151,10 +152,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (app.getPreferences().getString(Preferences.KEY_USER_TYPE) == null) {
             menu.removeItem(R.id.menuLogout);
+            menu.removeItem(R.id.menuUser);
         }
         else {
+            if (Integer.parseInt(app.getPreferences().getString(Preferences.KEY_USER_TYPE)) < 2) {
+                menu.removeItem(R.id.menuUser);
+            }
+
             menu.removeItem(R.id.menuLogin);
         }
+        menu.removeItem(R.id.menuMain);
 
         return true;
     }
@@ -164,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menuSummary:
                 startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
+                break;
+            case R.id.menuUser:
+                startActivity(new Intent(getApplicationContext(), OfficerActivity.class));
                 break;
             case R.id.menuLogin:
                 goTo(ListActivity.class);

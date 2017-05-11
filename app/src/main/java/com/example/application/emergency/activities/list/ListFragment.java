@@ -71,12 +71,15 @@ public class ListFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                loadList();
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                loadList();
+                if (s.equals("")) {
+                    loadList();
+                }
                 return false;
             }
         });

@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -16,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.AccessToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -166,6 +168,7 @@ public class HTTPService {
             @Override
             public void onResponse(String s) {
                 Log.d("HTTP", "onResponse " + s);
+                checkin();
 
                 try {
                     JSONObject json = new JSONObject(s);
@@ -189,6 +192,31 @@ public class HTTPService {
 
         request.setParams(params);
         queue.add(request);
+    }
+
+    private void checkin() {
+        if (AccessToken.getCurrentAccessToken() != null) {
+            /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
+            HashMap<String, String> params = new HashMap<String, String>();
+            params.put("function", "check_in");
+            params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
+            StringRequest request = new StringRequest(Request.Method.POST, BASE_URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String s) {
+                    Log.d("HTTP", "onResponse " + s);
+
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.d("HTTP", "onErrorResponse " + volleyError);
+                }
+            });
+
+            request.setParams(params);
+            queue.add(request);
+        }
     }
 
     public interface OnResponseCallback<T> {

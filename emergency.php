@@ -77,6 +77,24 @@
 
             echo json_encode($user);
         }
+        else if ($function == "check_in") {
+            $user_id = $_POST["user_id"];
+            sql("UPDATE user SET last_use_date = NOW() WHERE user_id = '$user_id'");
+
+            echo json_encode(["ok" => 0]);
+        }
+        else if ($function == "update_user") {
+            $user_id = $_POST["user_id"];
+            $type = $_POST["type"];
+            sql("UPDATE user SET type = $type WHERE user_id = '$user_id'");
+
+            echo json_encode(sql("SELECT type FROM user WHERE user_id = '$user_id'", false));
+        }
+        else if ($function == "get_users") {
+            $search = $_POST["search"];
+
+            echo json_encode(sql("SELECT * FROM user WHERE current_name LIKE '%$search%' ORDER BY DATE(last_use_date) DESC"));
+        }
         /******************** #accident type ********************/
         else if ($function == "get_accident_types") {
 
@@ -95,7 +113,7 @@
             echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.user_id, a.officer_id, a.location_x, a.location_y, a.status, a.date, a.date_approve, at.color, CONCAT('$url', at.image) type_image
                 FROM accident a, accident_type at
                 WHERE a.type_id = at.id AND a.status = $status AND a.user_id LIKE '%$user_id%'
-                AND (at.title LIKE '%$search%' OR a.title LIKE '%$search%' OR a.user_id LIKE '%$user_id%')
+                AND ((at.title LIKE '%$search%' OR a.title LIKE '%$search%') AND a.user_id LIKE '%$user_id%')
                 AND DATE('$from') <= DATE(a.date) AND DATE(a.date) <= DATE('$to')
                 ORDER BY a.date DESC"));
         }
