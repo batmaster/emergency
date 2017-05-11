@@ -2,10 +2,10 @@
 -- version 4.0.10deb1
 -- http://www.phpmyadmin.net
 --
--- โฮสต์: localhost
--- เวลาในการสร้าง: 11 พ.ค. 2017  01:22น.
--- เวอร์ชั่นของเซิร์ฟเวอร์: 5.5.50-0ubuntu0.14.04.1
--- รุ่นของ PHP: 5.5.9-1ubuntu4.21
+-- Host: localhost
+-- Generation Time: May 12, 2017 at 02:58 AM
+-- Server version: 5.5.50-0ubuntu0.14.04.1
+-- PHP Version: 5.5.9-1ubuntu4.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- ฐานข้อมูล: `foundation`
+-- Database: `foundation`
 --
 CREATE DATABASE IF NOT EXISTS `foundation` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `foundation`;
@@ -25,7 +25,7 @@ USE `foundation`;
 -- --------------------------------------------------------
 
 --
--- โครงสร้างตาราง `accident`
+-- Table structure for table `accident`
 --
 
 DROP TABLE IF EXISTS `accident`;
@@ -41,12 +41,12 @@ CREATE TABLE IF NOT EXISTS `accident` (
   `date` varchar(20) NOT NULL,
   `date_approve` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=128 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=130 ;
 
 -- --------------------------------------------------------
 
 --
--- โครงสร้างตาราง `accident_image`
+-- Table structure for table `accident_image`
 --
 
 DROP TABLE IF EXISTS `accident_image`;
@@ -55,12 +55,12 @@ CREATE TABLE IF NOT EXISTS `accident_image` (
   `accident_id` int(10) NOT NULL,
   `image` varchar(256) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=60 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=63 ;
 
 -- --------------------------------------------------------
 
 --
--- โครงสร้างตาราง `accident_type`
+-- Table structure for table `accident_type`
 --
 
 DROP TABLE IF EXISTS `accident_type`;
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `accident_type` (
 -- --------------------------------------------------------
 
 --
--- โครงสร้างตาราง `user`
+-- Table structure for table `user`
 --
 
 DROP TABLE IF EXISTS `user`;
@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `user_id` varchar(32) NOT NULL,
   `current_name` varchar(64) NOT NULL,
   `type` int(1) NOT NULL,
+  `last_use_date` varchar(20) NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
