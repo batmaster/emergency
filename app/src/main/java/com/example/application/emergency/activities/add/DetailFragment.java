@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -36,6 +37,8 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.messenger.MessengerUtils;
+import com.facebook.messenger.ShareToMessengerParams;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -241,22 +244,27 @@ public class DetailFragment extends Fragment {
                             imageViewPeople.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
+
                                     try {
-                                        PackageInfo info = getActivity().getPackageManager().getPackageInfo("com.facebook.orca", PackageManager.GET_META_DATA);
-                                        Intent appIntent = new Intent(Intent.ACTION_SEND);
-                                        appIntent.setType("text/plain");
-                                        appIntent.putExtra(Intent.EXTRA_TEXT, "http://batmasterio.com:8888/emergency.php?id=" + o.getString("id"));
-                                        appIntent.putExtra(Intent.EXTRA_SUBJECT, "ได้รับแจ้งเหตุ " + o.getString("title"));
-                                        appIntent.setPackage("com.facebook.orca");
-                                        startActivity(Intent.createChooser(appIntent, "ส่งรายการแจ้งเหตุ"));
+
+                                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.facebook.com/" + o.getString("user_id")));
+                                        startActivity(i);
+//
+//                                        PackageInfo info = getActivity().getPackageManager().getPackageInfo("com.facebook.orca", PackageManager.GET_META_DATA);
+//                                        Intent appIntent = new Intent(Intent.ACTION_SEND);
+//                                        appIntent.setType("text/plain");
+//                                        appIntent.putExtra(Intent.EXTRA_TEXT, "http://batmasterio.com:8888/emergency.php?id=" + o.getString("id"));
+//                                        appIntent.putExtra(Intent.EXTRA_SUBJECT, "ได้รับแจ้งเหตุ " + o.getString("title"));
+//                                        appIntent.setPackage("com.facebook.orca");
+//                                        startActivity(Intent.createChooser(appIntent, "ส่งรายการแจ้งเหตุ"));
                                     }
                                     catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    catch (PackageManager.NameNotFoundException e) {
-                                        e.printStackTrace();
-                                        Toast.makeText(getContext(), "ไม่พบแอพพลิเคชั่น Messenger", Toast.LENGTH_SHORT).show();
-                                    }
+//                                    catch (PackageManager.NameNotFoundException e) {
+//                                        e.printStackTrace();
+//                                        Toast.makeText(getContext(), "ไม่พบแอพพลิเคชั่น Messenger", Toast.LENGTH_SHORT).show();
+//                                    }
 
                                 }
                             });
