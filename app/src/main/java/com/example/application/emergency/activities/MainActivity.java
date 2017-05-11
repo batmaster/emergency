@@ -149,6 +149,13 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu, menu);
 
+        if (app.getPreferences().getString(Preferences.KEY_USER_TYPE) == null) {
+            menu.removeItem(R.id.menuLogout);
+        }
+        else {
+            menu.removeItem(R.id.menuLogin);
+        }
+
         return true;
     }
 
@@ -158,11 +165,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menuSummary:
                 startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
                 break;
+            case R.id.menuLogin:
+                goTo(ListActivity.class);
+                break;
             case R.id.menuLogout:
                 LoginManager.getInstance().logOut();
                 app.getPreferences().removeString(Preferences.KEY_USER_TYPE);
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 break;
         }
         return true;

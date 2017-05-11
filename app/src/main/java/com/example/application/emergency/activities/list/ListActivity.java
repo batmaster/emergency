@@ -100,6 +100,11 @@ public class ListActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.mainmenu, menu);
 
+        if (app.getPreferences().getString(Preferences.KEY_USER_TYPE) == null) {
+            menu.removeItem(R.id.menuLogout);
+        }
+        menu.removeItem(R.id.menuLogin);
+
         return true;
     }
 

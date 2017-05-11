@@ -9,6 +9,12 @@
         app:showAsAction="withText"/>
 
     <item
+        android:id="@+id/menuLogin"
+        android:title="เข้าสู่ระบบ"
+        android:orderInCategory="2"
+        app:showAsAction="withText"/>
+
+    <item
         android:id="@+id/menuLogout"
         android:title="ออกจากระบบ"
         android:icon="@drawable/ic_logout"
