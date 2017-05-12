@@ -25,6 +25,9 @@
     <string name="update_confirm">อัพเดต</string>
     <string name="update_no_confirm">ยกเลิก</string>
 
+    <string name="change_confirm">ตกลง</string>
+    <string name="change_no_confirm">ยกเลิก</string>
+
     <string name="facebook_app_id">515110462212814</string>
 
 
