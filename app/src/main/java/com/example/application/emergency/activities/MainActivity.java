@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if (AccessToken.getCurrentAccessToken() != null) {
+            checkIsBlocked();
+        }
     }
 
     /** ฟังก์ชั่นของระบบแอนดรอยด์ สำหรับเรียกใช้หลังการกลับจาก process อื่น **/
@@ -173,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
                 break;
             case R.id.menuUser:
-                startActivity(new Intent(getApplicationContext(), OfficerActivity.class));
+                goTo(OfficerActivity.class);
                 break;
             case R.id.menuLogin:
                 goTo(ListActivity.class);
@@ -220,8 +224,13 @@ public class MainActivity extends AppCompatActivity {
                                         try {
                                             app.getPreferences().putString(Preferences.KEY_USER_TYPE, data.getString("type"));
 
-                                            startActivity(new Intent(MainActivity.this, c));
-                                            finish();
+                                            if (data.getInt("status") == 0) {
+                                                Toast.makeText(getApplicationContext(), "ผู้ใช้ " + Profile.getCurrentProfile().getName() + " ถูกระงับการใช้งาน กรุณาติดต่อเจ้าหน้าที่", Toast.LENGTH_SHORT).show();
+                                            }
+                                            else {
+                                                startActivity(new Intent(MainActivity.this, c));
+                                                finish();
+                                            }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
@@ -246,8 +255,69 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else {
-            startActivity(new Intent(MainActivity.this, c));
-            finish();
+            final HashMap<String, String> params2 = new HashMap<String, String>();
+            params2.put("function", "check_user");
+            final String user_id = AccessToken.getCurrentAccessToken().getUserId();
+            params2.put("user_id", user_id);
+            new GraphRequest(
+                    AccessToken.getCurrentAccessToken(), "/" + user_id, null, HttpMethod.GET, new GraphRequest.Callback() {
+                public void onCompleted(GraphResponse response) {
+                    try {
+                        params2.put("current_name", response.getJSONObject().getString("name"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    app.getHttpService().callPHP(params2, new HTTPService.OnResponseCallback<JSONObject>() {
+                        @Override
+                        public void onResponse(boolean success, Throwable error, JSONObject data) {
+                            if (data != null) {
+                                try {
+                                    app.getPreferences().putString(Preferences.KEY_USER_TYPE, data.getString("type"));
+
+                                    if (data.getInt("status") == 0) {
+                                        Toast.makeText(getApplicationContext(), "ผู้ใช้ " + Profile.getCurrentProfile().getName() + " ถูกระงับการใช้งาน กรุณาติดต่อเจ้าหน้าที่", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        startActivity(new Intent(MainActivity.this, c));
+                                        finish();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            ).executeAsync();
         }
+    }
+
+    private void checkIsBlocked() {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("function", "check_user");
+        params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
+        params.put("current_name", Profile.getCurrentProfile().getName());
+        app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+            @Override
+            public void onResponse(boolean success, Throwable error, JSONObject data) {
+                if (data != null) {
+                    try {
+                        app.getPreferences().putString(Preferences.KEY_USER_TYPE, data.getString("type"));
+
+                        if (data.getInt("status") == 0) {
+                            Toast.makeText(getApplicationContext(), "ผู้ใช้ " + Profile.getCurrentProfile().getName() + " ถูกระงับการใช้งาน กรุณาติดต่อเจ้าหน้าที่", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "ไม่สามารถตรวจสอบสถานะผู้ใช้งาน กรุณาตรวจสอบการเชื่อมต่อ", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

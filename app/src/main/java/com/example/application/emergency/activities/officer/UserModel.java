@@ -9,12 +9,14 @@ public class UserModel {
     private String userId;
     private String currentName;
     private int type;
+    private int status;
     private String lastUseDate;
 
-    public UserModel(String userId, String currentName, int type, String lastUseDate) {
+    public UserModel(String userId, String currentName, int type, int status, String lastUseDate) {
         this.userId = userId;
         this.currentName = currentName;
         this.type = type;
+        this.status = status;
         this.lastUseDate = lastUseDate;
     }
 
@@ -40,6 +42,14 @@ public class UserModel {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getLastUseDate() {

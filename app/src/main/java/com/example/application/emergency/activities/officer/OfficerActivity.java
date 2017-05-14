@@ -136,6 +136,7 @@ public class OfficerActivity extends AppCompatActivity {
                                     o.getString("user_id"),
                                     o.getString("current_name"),
                                     o.getInt("type"),
+                                    o.getInt("status"),
                                     o.getString("last_use_date")
                             ));
                         }

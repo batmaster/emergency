@@ -131,16 +131,76 @@ public class ListViewUserAdapter extends BaseAdapter {
         TextView textViewLastUseDate = (TextView) view.findViewById(R.id.textViewLastUseDate);
         textViewLastUseDate.setText("ใช้งานล่าสุด " + list.get(i).getLastUseDate());
 
-        final boolean[] isClick = {false};
-        final ToggleButton switchType = (ToggleButton) view.findViewById(R.id.switchType);
-        switchType.setChecked(list.get(i).getType() > 0);
-        switchType.setEnabled(list.get(i).getType() < 2);
-        switchType.setOnTouchListener(new View.OnTouchListener() {
+        final boolean[] isClick = {false, false};
+
+        final Switch switchEnable = (Switch) view.findViewById(R.id.switchEnable);
+        final Switch switchType = (Switch) view.findViewById(R.id.switchType);
+
+        switchEnable.setChecked(list.get(i).getStatus() == 1);
+        switchEnable.setEnabled(list.get(i).getType() < 2);
+        switchEnable.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (!isClick[0]) {
                     isClick[0] = true;
                     new AlertDialog.Builder(activity)
+                            .setCancelable(false)
+                            .setTitle("เปลี่ยนสถานะผู้ใช้")
+                            .setMessage("เปลี่ยนสถานะผู้ใช้\n" + list.get(i).getCurrentName() + "\nเป็น " + (switchEnable.isChecked() ? "ระงับการใช้งาน" : "เปิดการใช้งาน") + " หรือไม่")
+                            .setPositiveButton(R.string.change_confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i2) {
+                                    /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
+                                    HashMap<String, String> params = new HashMap<String, String>();
+                                    params.put("function", "update_user");
+                                    params.put("user_id", list.get(i).getUserId());
+                                    params.put("type", switchType.isChecked() ? "1" : "0");
+                                    params.put("status", switchEnable.isChecked() ? "0" : "1");
+                                    ((EmergencyApplication) context.getApplicationContext()).getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+                                        @Override
+                                        public void onResponse(boolean success, Throwable error, JSONObject data) {
+                                            if (data != null) {
+                                                try {
+                                                    if (data.getInt("status") != 0) {
+                                                        Toast.makeText(context, "เปิดการใช้งาน " + list.get(i).getCurrentName() + " แล้ว", Toast.LENGTH_SHORT).show();
+                                                        switchEnable.setChecked(true);
+                                                    } else {
+                                                        Toast.makeText(context, "ระงับการใช้งาน " + list.get(i).getCurrentName() + " แล้ว", Toast.LENGTH_SHORT).show();
+                                                        switchEnable.setChecked(false);
+                                                    }
+                                                    return;
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                Toast.makeText(context, "ไม่สามารถเปลี่ยนสถานะได้", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+
+                                    isClick[0] = false;
+                                }
+                            })
+                            .setNegativeButton(R.string.change_no_confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    isClick[0] = false;
+                                }
+                            }).show();
+                }
+
+                return true;
+            }
+        });
+
+        switchType.setChecked(list.get(i).getType() > 0);
+        switchType.setEnabled(list.get(i).getType() < 2);
+        switchType.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (!isClick[1]) {
+                    isClick[1] = true;
+                    new AlertDialog.Builder(activity)
+                        .setCancelable(false)
                         .setTitle("เปลี่ยนบทบาทผู้ใช้")
                         .setMessage("เปลี่ยนบทบาทผู้ใช้\n" + list.get(i).getCurrentName() + "\nเป็น " + (switchType.isChecked() ? "ผู้ใช้" : "เจ้าหน้าที่") + " หรือไม่")
                         .setPositiveButton(R.string.change_confirm, new DialogInterface.OnClickListener() {
@@ -151,13 +211,13 @@ public class ListViewUserAdapter extends BaseAdapter {
                                 params.put("function", "update_user");
                                 params.put("user_id", list.get(i).getUserId());
                                 params.put("type", switchType.isChecked() ? "0" : "1");
+                                params.put("status", switchEnable.isChecked() ? "1" : "0");
                                 ((EmergencyApplication) context.getApplicationContext()).getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
                                     @Override
                                     public void onResponse(boolean success, Throwable error, JSONObject data) {
                                         if (data != null) {
                                             try {
-                                                int type = data.getInt("type");
-                                                if (type > 0) {
+                                                if (data.getInt("type") > 0) {
                                                     Toast.makeText(context, "มอบหมาย " + list.get(i).getCurrentName() + " เป็นเจ้าหน้าที่แล้ว", Toast.LENGTH_SHORT).show();
                                                     switchType.setChecked(true);
                                                 } else {
@@ -173,13 +233,13 @@ public class ListViewUserAdapter extends BaseAdapter {
                                     }
                                 });
 
-                                isClick[0] = false;
+                                isClick[1] = false;
                             }
                         })
                         .setNegativeButton(R.string.change_no_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                isClick[0] = false;
+                                isClick[1] = false;
                             }
                         }).show();
                 }
