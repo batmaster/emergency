@@ -179,6 +179,7 @@ public class ImagesFragment extends Fragment {
         if (aid != -1) {
             imageViewCamera.setVisibility(View.GONE);
             imageViewAlbum.setVisibility(View.GONE);
+            imageViewDelete.setVisibility(View.GONE);
         }
 
         return v;
