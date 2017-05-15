@@ -393,6 +393,7 @@ public class DetailFragment extends Fragment {
             /** ซ่อน component สถานะ หากไม่ใช่เจ้าหน้าที่ **/
             if (app.getPreferences().getString(Preferences.KEY_USER_TYPE).equals("0")) {
                 setStatusEnable(false);
+
             }
         }
 

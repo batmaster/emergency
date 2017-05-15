@@ -103,9 +103,7 @@
                     android:text="People"/>
 
             </RelativeLayout>
-
         </LinearLayout>
-
     </LinearLayout>
 
     <Button

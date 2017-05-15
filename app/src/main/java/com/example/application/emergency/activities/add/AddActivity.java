@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.application.emergency.R;
@@ -50,6 +51,7 @@ public class AddActivity extends AppCompatActivity {
 
     private int aid;
 
+    private LinearLayout layoutDetail;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private AddPagerAdapter pagerAdapter;
@@ -67,6 +69,8 @@ public class AddActivity extends AppCompatActivity {
         aid = getIntent().getIntExtra("aid", -1);
 
         /** ตั้งค่า component **/
+        layoutDetail = (LinearLayout) findViewById(R.id.layoutDetail);
+
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -142,7 +146,6 @@ public class AddActivity extends AppCompatActivity {
                     });
                 }
                 else {
-
                     new AlertDialog.Builder(AddActivity.this)
                             .setTitle("อัพเดตรายการแจ้งเตือน")
                             .setMessage("คุณต้องการอัพเดตรายการแจ้งเตือนนี้หรือไม่")
@@ -226,7 +229,6 @@ public class AddActivity extends AppCompatActivity {
                                 }
                             })
                             .setNegativeButton(R.string.update_no_confirm, null).show();
-
                 }
             }
         });
@@ -234,6 +236,12 @@ public class AddActivity extends AppCompatActivity {
         /** เปลี่ยนข้อความบนปุ่ม เพิ่ม เป็น อัพเดต หากหน้านี้ถูกเรียกโดยการคลิกรายการการแจ้งเหตุ **/
         if (aid != -1) {
             buttonAdd.setText("อัพเดต");
+            if (app.getPreferences().getString(Preferences.KEY_USER_TYPE).equals("0")) {
+                buttonAdd.setVisibility(View.GONE);
+                LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) layoutDetail.getLayoutParams();
+                p.weight = 100f;
+                layoutDetail.setLayoutParams(p);
+            }
         }
     }
 
