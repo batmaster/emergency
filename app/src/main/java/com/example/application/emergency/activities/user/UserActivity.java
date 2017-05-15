@@ -1,4 +1,4 @@
-package com.example.application.emergency.activities.list;
+package com.example.application.emergency.activities.user;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,23 +9,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.MainActivity;
 import com.example.application.emergency.activities.SummaryActivity;
-import com.example.application.emergency.activities.add.AddActivity;
-import com.example.application.emergency.activities.user.UserActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.Preferences;
 import com.facebook.login.LoginManager;
 
 /**
- * class แสดงผล activity หน้ารายการการแจ้งเหตุ
+ * class แสดงผล activity หน้ารายการผู้ใช้
  */
-public class ListActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity {
 
     /** ประกาศตัวแปร และ component ที่ใช้ในหน้า **/
     private EmergencyApplication app;
@@ -33,12 +28,10 @@ public class ListActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    private Button buttonAdd;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_user);
 
         app = (EmergencyApplication) getApplication();
 
@@ -46,20 +39,13 @@ public class ListActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setOffscreenPageLimit(3);
-        final PagerAdapter pagerAdapter = new ListPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setOffscreenPageLimit(2);
+        final PagerAdapter pagerAdapter = new UserPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() == 0) {
-                    buttonAdd.setVisibility(View.VISIBLE);
-                }
-                else {
-                    buttonAdd.setVisibility(View.GONE);
-                }
-
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -73,29 +59,9 @@ public class ListActivity extends AppCompatActivity {
 
             }
         });
-
-        buttonAdd = (Button) findViewById(R.id.buttonAdd);
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), AddActivity.class));
-                finish();
-            }
-        });
-
-        Toast.makeText(getApplicationContext(), "คลิกเหตุการณ์ค้างเพื่อแชร์", Toast.LENGTH_SHORT).show();
     }
 
     /** ตั้งค่าปุ่มเมนูในหน้า activity **/
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (app.getPreferences().getString(Preferences.KEY_USER_TYPE) == null) {
-            menu.removeItem(R.id.menuLogout);
-        }
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -103,16 +69,11 @@ public class ListActivity extends AppCompatActivity {
 
         if (app.getPreferences().getString(Preferences.KEY_USER_TYPE) == null) {
             menu.removeItem(R.id.menuLogout);
-            menu.removeItem(R.id.menuUser);
         }
         else {
-            if (Integer.parseInt(app.getPreferences().getString(Preferences.KEY_USER_TYPE)) < 2) {
-                menu.removeItem(R.id.menuUser);
-            }
+            menu.removeItem(R.id.menuUser);
+            menu.removeItem(R.id.menuLogin);
         }
-
-        menu.removeItem(R.id.menuLogin);
-        menu.removeItem(R.id.menuMain);
 
         return true;
     }
@@ -123,20 +84,20 @@ public class ListActivity extends AppCompatActivity {
             case R.id.menuSummary:
                 startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
                 break;
-            case R.id.menuUser:
-                startActivity(new Intent(getApplicationContext(), UserActivity.class));
+            case R.id.menuMain:
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
                 break;
             case R.id.menuLogout:
                 LoginManager.getInstance().logOut();
                 app.getPreferences().removeString(Preferences.KEY_USER_TYPE);
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 break;
         }
         return true;
     }
 
-    /** เปลี่ยนหน้า หากกดปุ่ม back บนมือถือแอนดรอยด์ **/
     @Override
     public void onBackPressed() {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));

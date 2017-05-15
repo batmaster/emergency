@@ -67,7 +67,7 @@
 
             $user = sql("SELECT type, status FROM user WHERE user_id = '$user_id'", false);
             if (count($user["array"]) == 0 && !isset($user["type"])) {
-                sql("INSERT INTO user (user_id) VALUES ('$user_id')");
+                sql("INSERT INTO user (user_id, register_date) VALUES ('$user_id', NOW())");
 
                 $user = sql("SELECT type, status FROM user WHERE user_id = '$user_id'", false);
             }
@@ -93,8 +93,9 @@
         }
         else if ($function == "get_users") {
             $search = $_POST["search"];
+            $type = $_POST["type"];
 
-            echo json_encode(sql("SELECT * FROM user WHERE current_name LIKE '%$search%' ORDER BY DATE(last_use_date) DESC"));
+            echo json_encode(sql("SELECT * FROM user WHERE current_name LIKE '%$search%' AND type $type ORDER BY DATE(register_date)"));
         }
         /******************** #accident type ********************/
         else if ($function == "get_accident_types") {

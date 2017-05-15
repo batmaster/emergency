@@ -1,6 +1,5 @@
 package com.example.application.emergency.activities.add;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,14 +9,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -25,7 +21,7 @@ import com.example.application.emergency.R;
 import com.example.application.emergency.activities.MainActivity;
 import com.example.application.emergency.activities.SummaryActivity;
 import com.example.application.emergency.activities.list.ListActivity;
-import com.example.application.emergency.activities.officer.OfficerActivity;
+import com.example.application.emergency.activities.user.UserActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
@@ -292,7 +288,7 @@ public class AddActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
                 break;
             case R.id.menuUser:
-                startActivity(new Intent(getApplicationContext(), OfficerActivity.class));
+                startActivity(new Intent(getApplicationContext(), UserActivity.class));
                 break;
             case R.id.menuLogout:
                 LoginManager.getInstance().logOut();

@@ -1,44 +1,31 @@
-package com.example.application.emergency.activities.officer;
+package com.example.application.emergency.activities.user;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.application.emergency.R;
-import com.example.application.emergency.activities.add.AddActivity;
-import com.example.application.emergency.activities.list.ListActivity;
-import com.example.application.emergency.activities.list.ListModel;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
-import com.example.application.emergency.services.ReadableTime;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,7 +81,7 @@ public class ListViewUserAdapter extends BaseAdapter {
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if(view == null) {
-            view = mInflater.inflate(R.layout.listview_row_officer, viewGroup, false);
+            view = mInflater.inflate(R.layout.listview_row_user, viewGroup, false);
         }
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
@@ -224,6 +211,8 @@ public class ListViewUserAdapter extends BaseAdapter {
                                                     Toast.makeText(context, "มอบหมาย " + list.get(i).getCurrentName() + " เป็นผู้ใช้ทั่วไปแล้ว", Toast.LENGTH_SHORT).show();
                                                     switchType.setChecked(false);
                                                 }
+
+                                                UserListReloadObservable.getInstance().notifyObservers();
                                                 return;
                                             } catch (JSONException e) {
                                                 e.printStackTrace();

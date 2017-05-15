@@ -15,18 +15,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.application.emergency.R;
 import com.example.application.emergency.activities.add.AddActivity;
 import com.example.application.emergency.activities.list.ListActivity;
-import com.example.application.emergency.activities.officer.OfficerActivity;
+import com.example.application.emergency.activities.user.UserActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
@@ -177,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), SummaryActivity.class));
                 break;
             case R.id.menuUser:
-                goTo(OfficerActivity.class);
+                goTo(UserActivity.class);
                 break;
             case R.id.menuLogin:
                 goTo(ListActivity.class);

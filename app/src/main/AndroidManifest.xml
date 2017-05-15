@@ -68,7 +68,7 @@
             android:name="io.fabric.ApiKey"
             android:value="7904b432feede08d67f6b0ef2866115bac3a2b6f" />
 
-        <activity android:name=".activities.officer.OfficerActivity"></activity>
+        <activity android:name=".activities.user.UserActivity"></activity>
     </application>
 
 </manifest>

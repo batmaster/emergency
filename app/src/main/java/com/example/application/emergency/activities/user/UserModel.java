@@ -1,4 +1,4 @@
-package com.example.application.emergency.activities.officer;
+package com.example.application.emergency.activities.user;
 
 /**
  * class สำหรับบรรจุข้อมูลรายการการแจ้งเตือนที่ดาวน์โหลดมาจาก server

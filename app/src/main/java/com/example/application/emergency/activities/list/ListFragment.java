@@ -46,6 +46,10 @@ public class ListFragment extends Fragment {
     private int status;
     public static final String KEY_STATUS = "KEY_STATUS";
 
+    public static final int LIST_PENDING = 0;
+    public static final int LIST_PROGRESSING = 1;
+    public static final int LIST_DONE = 2;
+
     private SearchView searchView;
     private ImageView imageViewDatePicker;
     private Dialog dialogDatePicker;
@@ -170,10 +174,6 @@ public class ListFragment extends Fragment {
         return v;
     }
 
-    public static final int LIST_PENDING = 0;
-    public static final int LIST_PROGRESSING = 1;
-    public static final int LIST_DONE = 2;
-
     /** ฟังก์ชั่นสำหรับดาวน์โหลดรายการการแจ้งเหตุจาก server **/
     public void loadList() {
         Calendar from = Calendar.getInstance();
@@ -234,10 +234,5 @@ public class ListFragment extends Fragment {
                 }
             }
         });
-    }
-
-    private void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager =(InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
