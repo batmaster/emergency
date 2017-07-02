@@ -172,6 +172,7 @@ public class HTTPService {
 
                 try {
                     JSONObject json = new JSONObject(s);
+                    Log.d("jsonn", json.toString());
 
                     responseCallback.onResponse(true, null, json);
 

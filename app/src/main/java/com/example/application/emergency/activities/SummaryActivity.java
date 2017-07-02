@@ -25,6 +25,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
@@ -32,7 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -143,28 +143,36 @@ public class SummaryActivity extends AppCompatActivity {
                                     try {
                                         JSONArray a = data.getJSONArray("array");
 
-                                        int maxday = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+                                        int maxday = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-                                        float[][] xy = new float[maxday][maxtype];
+                                        float[][] xy = new float[maxtype][maxday];
 
                                         for (int i = 0; i < a.length(); i++) {
                                             JSONObject o = a.getJSONObject(i);
-                                            int d = Integer.parseInt(o.getString("date"));
+                                            int d = Integer.parseInt(o.getString("date")) - 1;
                                             int t = typeOrders.get(Integer.parseInt(o.getString("type_id")));
                                             float am = Float.parseFloat(o.getString("amount"));
 
-                                            xy[d][t] = am;
+                                            xy[t][d] = am;
+                                        }
+                                        List<IBarDataSet> sets = new ArrayList<IBarDataSet>();
+                                        for (int i = 0; i < maxtype; i++) {
+
+                                            List<BarEntry> entries = new ArrayList<BarEntry>();
+                                            for (int j = 0; j < maxday; j++) {
+                                                entries.add(new BarEntry((j + 1), xy[i][j]));
+                                            }
+
+                                            BarDataSet barDataSet = new BarDataSet(entries, types[i]);
+                                            barDataSet.setColor(colors[i]);
+                                            sets.add(barDataSet);
                                         }
 
-                                        List<BarEntry> entries = new ArrayList<BarEntry>();
-                                        for (int i = 0; i < maxday; i++) {
-                                            entries.add(new BarEntry((i + 1), xy[i]));
-                                        }
-
-                                        BarDataSet barDataSet = new BarDataSet(entries, "");
-                                        barDataSet.setColors(colors);
-                                        barDataSet.setStackLabels(types);
-                                        BarData barData = new BarData(barDataSet);
+                                        int startYear = 1;
+                                        float groupSpace = 0.04f;
+                                        float barSpace = 0.02f; // x2 dataset
+                                        BarData barData = new BarData(sets);
+                                        barData.groupBars(startYear, groupSpace, barSpace);
                                         barData.setValueFormatter(new IValueFormatter() {
 
                                             @Override

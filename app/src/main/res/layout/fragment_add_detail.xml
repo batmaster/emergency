@@ -7,16 +7,36 @@
     android:paddingLeft="32px"
     android:paddingRight="32px">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="รายละเอียด" />
+        android:orientation="horizontal"
+        android:weightSum="100" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:text="รายละเอียด" />
+
+        <TextView
+            android:id="@+id/textViewPhone"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:text="เบอร์" />
+    </LinearLayout>
+
+
 
     <EditText
         android:id="@+id/editTextTitle"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:maxLength="1024"/>
+        android:maxLength="1024" />
 
     <LinearLayout
         android:layout_width="match_parent"

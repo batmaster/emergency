@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <CheckBox
+        android:visibility="gone"
         android:id="@+id/checkBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +16,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="จากวันที่"/>
+        android:text="วันที่"/>
 
     <DatePicker
         android:id="@+id/datePickerFrom"
@@ -34,9 +35,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:text="ถึงวันที่"/>
 
     <DatePicker
+        android:visibility="gone"
         android:id="@+id/datePickerTo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

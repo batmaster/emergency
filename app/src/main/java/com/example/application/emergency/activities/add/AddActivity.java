@@ -1,5 +1,6 @@
 package com.example.application.emergency.activities.add;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,7 +14,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -102,44 +105,70 @@ public class AddActivity extends AppCompatActivity {
                 }
 
                 if (aid == -1) {
-                    Toast.makeText(getApplicationContext(), "กำลังเพิ่มเหตุการณ์", Toast.LENGTH_SHORT).show();
+                    final Dialog dialog = new Dialog(AddActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.dialog_number);
+                    dialog.setCancelable(true);
 
-                    String title = detailFragment.getEditTextTitle().getText().toString();
-                    int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
-                    double locationX = detailFragment.getMarker().getPosition().latitude;
-                    double locationY = detailFragment.getMarker().getPosition().longitude;
-                    final ArrayList<Uri> imageUris = imagesFragment.getNewImageUris();
-
-                    /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    params.put("function", "add_accident");
-                    params.put("title", title);
-                    params.put("type_id", String.valueOf(typeId));
-                    params.put("location_x", String.valueOf(locationX));
-                    params.put("location_y", String.valueOf(locationY));
-                    params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
-
-                    app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+                    final EditText phone = (EditText) dialog.findViewById(R.id.editTextPhone);
+                    Button ok = (Button) dialog.findViewById(R.id.buttonOK);
+                    ok.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onResponse(boolean success, Throwable error, JSONObject data) {
-                            if (data != null) {
-                                try {
-                                    String id = data.getString("id");
-                                    app.getHttpService().upload(imageUris, id);
+                        public void onClick(View v) {
+                            Toast.makeText(getApplicationContext(), "กำลังเพิ่มเหตุการณ์", Toast.LENGTH_SHORT).show();
 
-                                    Intent intent = new Intent(getApplicationContext(), ListActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(intent);
-                                    finish();
+                            String title = detailFragment.getEditTextTitle().getText().toString();
+                            int typeId = detailFragment.getSpinnerValue().get(detailFragment.getSpinner().getSelectedItemPosition());
+                            double locationX = detailFragment.getMarker().getPosition().latitude;
+                            double locationY = detailFragment.getMarker().getPosition().longitude;
+                            final ArrayList<Uri> imageUris = imagesFragment.getNewImageUris();
+
+                            /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("function", "add_accident");
+                            params.put("title", title);
+                            params.put("type_id", String.valueOf(typeId));
+                            params.put("location_x", String.valueOf(locationX));
+                            params.put("location_y", String.valueOf(locationY));
+                            params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
+                            params.put("phone", phone.getText().toString());
+
+                            app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+                                @Override
+                                public void onResponse(boolean success, Throwable error, JSONObject data) {
+                                    if (data != null) {
+                                        try {
+                                            String id = data.getString("id");
+                                            app.getHttpService().upload(imageUris, id);
+
+                                            Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            finish();
 
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
                                 }
-                            }
+                            });
+                            dialog.dismiss();
                         }
                     });
+                    Button cancel = (Button) dialog.findViewById(R.id.buttonCancel);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+
+                    dialog.show();
+
+
                 }
                 else {
                     new AlertDialog.Builder(AddActivity.this)
@@ -310,7 +339,7 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
-    /** เปลี่ยนหน้า หากกดปุ่ม back บนมือถือแอนดรอยด์ **/
+    /** เปลี่ยนหน้า หากกดปุ่ม back บนมือถือแอนดรอยด์ **/
     @Override
     public void onBackPressed() {
         startActivity(new Intent(getApplicationContext(), ListActivity.class));

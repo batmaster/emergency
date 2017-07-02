@@ -3,7 +3,6 @@ package com.example.application.emergency.activities.add;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
@@ -37,8 +36,6 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.facebook.messenger.MessengerUtils;
-import com.facebook.messenger.ShareToMessengerParams;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -64,6 +61,7 @@ public class DetailFragment extends Fragment {
 
     private int aid;
 
+    private TextView textViewPhone;
     private EditText editTextTitle;
     private Spinner spinner;
     private ArrayList<Integer> spinnerValue;
@@ -101,6 +99,7 @@ public class DetailFragment extends Fragment {
         /** ตั้งค่า component **/
         View v = inflater.inflate(R.layout.fragment_add_detail, container, false);
 
+        textViewPhone = (TextView) v.findViewById(R.id.textViewPhone);
         editTextTitle = (EditText) v.findViewById(R.id.editTextTitle);
 
         spinner = (Spinner) v.findViewById(R.id.spinner);
@@ -117,27 +116,27 @@ public class DetailFragment extends Fragment {
             public void onClick(View view) {
 
                 new AlertDialog.Builder(getActivity())
-                    .setTitle("ลบรายการแจ้งเตือน")
-                    .setMessage("คุณต้องการลบรายการแจ้งเตือนนี้หรือไม่")
-                    .setPositiveButton(R.string.delete_confirm, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
-                            HashMap<String, String> params = new HashMap<String, String>();
-                            params.put("function", "remove_accident");
-                            params.put("aid", String.valueOf(aid));
-                            app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
-                                @Override
-                                public void onResponse(boolean success, Throwable error, JSONObject data) {
-                                    if (data != null) {
-                                        startActivity(new Intent(getActivity().getApplicationContext(), ListActivity.class));
-                                        getActivity().finish();
+                        .setTitle("ลบรายการแจ้งเตือน")
+                        .setMessage("คุณต้องการลบรายการแจ้งเตือนนี้หรือไม่")
+                        .setPositiveButton(R.string.delete_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
+                                HashMap<String, String> params = new HashMap<String, String>();
+                                params.put("function", "remove_accident");
+                                params.put("aid", String.valueOf(aid));
+                                app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
+                                    @Override
+                                    public void onResponse(boolean success, Throwable error, JSONObject data) {
+                                        if (data != null) {
+                                            startActivity(new Intent(getActivity().getApplicationContext(), ListActivity.class));
+                                            getActivity().finish();
+                                        }
                                     }
-                                }
-                            });
-                        }
-                    })
-                    .setNegativeButton(R.string.delete_no_confirm, null).show();
+                                });
+                            }
+                        })
+                        .setNegativeButton(R.string.delete_no_confirm, null).show();
             }
         });
 
@@ -217,9 +216,9 @@ public class DetailFragment extends Fragment {
                 }
             });
 
-                LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) layoutDetail.getLayoutParams();
-                p.weight = 100f;
-                layoutDetail.setLayoutParams(p);
+            LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) layoutDetail.getLayoutParams();
+            p.weight = 100f;
+            layoutDetail.setLayoutParams(p);
         }
         /** ซ่่อน component ที่ไม่ได้ใช้งาน หากเป็นการแก้ไขรายการ **/
         else {
@@ -237,6 +236,9 @@ public class DetailFragment extends Fragment {
                         try {
                             JSONArray a = data.getJSONArray("array");
                             final JSONObject o = a.getJSONObject(0);
+
+                            textViewPhone.setVisibility(View.VISIBLE);
+                            textViewPhone.setText(o.getString("phone"));
 
                             editTextTitle.setText(o.getString("title"));
                             setStatus(o.getInt("status"));
@@ -271,6 +273,8 @@ public class DetailFragment extends Fragment {
 
                             Bundle p = new Bundle();
                             p.putString("fields", "name, picture.type(large)");
+
+
                             new GraphRequest(
                                     AccessToken.getCurrentAccessToken(), "/" + o.getString("user_id"), p, HttpMethod.GET, new GraphRequest.Callback() {
                                 public void onCompleted(GraphResponse response) {

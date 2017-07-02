@@ -15,6 +15,8 @@
         android:id="@+id/editTextPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:maxEms="10"
         android:inputType="phone" />
 
     <LinearLayout

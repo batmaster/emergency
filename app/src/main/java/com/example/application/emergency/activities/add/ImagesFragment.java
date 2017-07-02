@@ -43,13 +43,13 @@ public class ImagesFragment extends Fragment {
 
     private int aid;
 
-    private LinearLayout layoutGallery;
-    private ImageView imageViewCamera;
-    private ImageView imageViewAlbum;
-    private ImageView imageViewDelete;
-    private ImageView imageViewDone;
+    private LinearLayout layoutGallery;/** แทปลื่อนรูป**/
+    private ImageView imageViewCamera;/**เปิดกล้อง **/
+    private ImageView imageViewAlbum;/** อลบัม**/
+    private ImageView imageViewDelete;/** ลบรูป**/
+    private ImageView imageViewDone;/** กาถูกลบรูป**/
 
-    private ImageView imageView;
+    private ImageView imageView;/** โชรูปที่เลือก**/
 
     public static final int RESULT_CAMERA = 201;
     public static final int RESULT_GALLERY = 202;
@@ -176,7 +176,7 @@ public class ImagesFragment extends Fragment {
         });
 
         setEdittingMode(false);
-        if (aid != -1) {
+        if (aid != -1) {/** ขณะแก้ไข**/
             imageViewCamera.setVisibility(View.GONE);
             imageViewAlbum.setVisibility(View.GONE);
             imageViewDelete.setVisibility(View.GONE);

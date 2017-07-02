@@ -1,8 +1,6 @@
 package com.example.application.emergency.activities.list;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -20,7 +17,6 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.example.application.emergency.R;
-import com.example.application.emergency.activities.SummaryActivity;
 import com.example.application.emergency.services.EmergencyApplication;
 import com.example.application.emergency.services.HTTPService;
 import com.example.application.emergency.services.Preferences;
@@ -139,6 +135,11 @@ public class ListFragment extends Fragment {
                     loadList();
                 }
                 else {
+//                    Calendar from2 = Calendar.getInstance();
+//                    from2.set(Calendar.YEAR, datePickerFrom.getYear());
+//                    from2.set(Calendar.MONTH, datePickerFrom.getMonth());
+//                    from2.set(Calendar.DAY_OF_MONTH, datePickerFrom.getDayOfMonth()- 7);
+
                     Calendar from = Calendar.getInstance();
                     from.set(Calendar.YEAR, datePickerFrom.getYear());
                     from.set(Calendar.MONTH, datePickerFrom.getMonth());
@@ -149,7 +150,7 @@ public class ListFragment extends Fragment {
                     to.set(Calendar.MONTH, datePickerTo.getMonth());
                     to.set(Calendar.DAY_OF_MONTH, datePickerTo.getDayOfMonth());
 
-                    loadList(from, to);
+                    loadList(from, from);
                 }
             }
         });
@@ -183,12 +184,14 @@ public class ListFragment extends Fragment {
 
         Calendar to = Calendar.getInstance();
 
-        loadList(from, to);
+        loadList(to, to);
     }
 
     public void loadList(Calendar from, Calendar to) {
         /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
         HashMap<String, String> params = new HashMap<String, String>();
+        final ArrayList<ListModel> list = new ArrayList<ListModel>();
+
         params.put("function", "get_accidents");
         params.put("status", Integer.toString(status));
         params.put("search", String.valueOf(searchView.getQuery()));
@@ -204,7 +207,6 @@ public class ListFragment extends Fragment {
                     try {
                         JSONArray a = data.getJSONArray("array");
 
-                        ArrayList<ListModel> list = new ArrayList<ListModel>();
                         for (int i = 0; i < a.length(); i++) {
                             JSONObject o = a.getJSONObject(i);
 
