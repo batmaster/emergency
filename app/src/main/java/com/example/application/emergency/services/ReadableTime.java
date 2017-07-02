@@ -27,9 +27,8 @@ public class ReadableTime {
             diff /= 60;
 
             long hours = diff % 24;
-            diff /= 24;
 
-            long days = diff % 24;
+            long days = diff / 24;
 
             Log.d("ReadableTime", days + " " + hours + " " + minutes + " " + seconds) ;
 
