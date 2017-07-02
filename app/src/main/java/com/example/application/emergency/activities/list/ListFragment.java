@@ -1,13 +1,16 @@
 package com.example.application.emergency.activities.list;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -50,7 +53,21 @@ public class ListFragment extends Fragment {
     private ImageView imageViewDatePicker;
     private Dialog dialogDatePicker;
 
+    private DatePicker datePickerFrom;
+    private DatePicker datePickerTo;
+
     private ListView listView;
+    private ArrayList<ListModel> list;
+    private ListViewAdapter adapter;
+
+    // แบ่งหน้า
+    private int page = 1;
+    private int row = 20;
+    private int maxRow = -1;
+
+    private boolean isLoadMore = false;
+    private Handler mHandler = new Handler();
+    private ProgressDialog loading;
 
     public static ListFragment getInstance(int status) {
         ListFragment fragment = new ListFragment();
@@ -67,10 +84,17 @@ public class ListFragment extends Fragment {
         /** ตั้งค่า component **/
         final View v = inflater.inflate(R.layout.fragment_list, container, false);
 
+        loading = new ProgressDialog(getActivity());
+        loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        loading.setMessage("Loading....");
+
         searchView = (SearchView) v.findViewById(R.id.search);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                list.removeAll(list);
+                page = 1;
+                maxRow = -1;
                 loadList();
                 return false;
             }
@@ -78,6 +102,9 @@ public class ListFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String s) {
                 if (s.equals("")) {
+                    list.removeAll(list);
+                    page = 1;
+                    maxRow = -1;
                     loadList();
                 }
                 return false;
@@ -95,10 +122,10 @@ public class ListFragment extends Fragment {
         dialogDatePicker.setContentView(R.layout.dialog_datepicker_fragment_list);
         dialogDatePicker.setCancelable(true);
 
-        final DatePicker datePickerFrom = (DatePicker) dialogDatePicker.findViewById(R.id.datePickerFrom);
+        datePickerFrom = (DatePicker) dialogDatePicker.findViewById(R.id.datePickerFrom);
         datePickerFrom.setMaxDate(new Date().getTime());
 
-        final DatePicker datePickerTo = (DatePicker) dialogDatePicker.findViewById(R.id.datePickerTo);
+        datePickerTo = (DatePicker) dialogDatePicker.findViewById(R.id.datePickerTo);
         datePickerTo.setMaxDate(new Date().getTime());
 
         final CheckBox checkBox = (CheckBox) dialogDatePicker.findViewById(R.id.checkBox);
@@ -131,27 +158,21 @@ public class ListFragment extends Fragment {
             public void onClick(View v) {
                 dialogDatePicker.dismiss();
 
-                if (checkBox.isChecked()) {
-                    loadList();
-                }
-                else {
+//                if (checkBox.isChecked()) {
+//                    loadList();
+//                }
+//                else {
 //                    Calendar from2 = Calendar.getInstance();
 //                    from2.set(Calendar.YEAR, datePickerFrom.getYear());
 //                    from2.set(Calendar.MONTH, datePickerFrom.getMonth());
 //                    from2.set(Calendar.DAY_OF_MONTH, datePickerFrom.getDayOfMonth()- 7);
 
-                    Calendar from = Calendar.getInstance();
-                    from.set(Calendar.YEAR, datePickerFrom.getYear());
-                    from.set(Calendar.MONTH, datePickerFrom.getMonth());
-                    from.set(Calendar.DAY_OF_MONTH, datePickerFrom.getDayOfMonth());
 
-                    Calendar to = Calendar.getInstance();
-                    to.set(Calendar.YEAR, datePickerTo.getYear());
-                    to.set(Calendar.MONTH, datePickerTo.getMonth());
-                    to.set(Calendar.DAY_OF_MONTH, datePickerTo.getDayOfMonth());
-
-                    loadList(from, from);
-                }
+                    list.removeAll(list);
+                    page = 1;
+                    maxRow = -1;
+                    loadList();
+//                }
             }
         });
 
@@ -166,45 +187,107 @@ public class ListFragment extends Fragment {
         });
 
         listView = (ListView) v.findViewById(R.id.listView);
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int lastInScreen = firstVisibleItem + visibleItemCount;
+
+
+                if (maxRow == -1 || (((page + 1) * row <= maxRow) || ((page + 1) * row) - maxRow <= row)) {
+                    if ((lastInScreen == totalItemCount) && !isLoadMore && (firstVisibleItem != 0)) {
+                        isLoadMore = true;
+                        if (maxRow != -1) {
+                            int r = (page + 1) * row;
+                            if (r > maxRow) {
+                                r = maxRow;
+                            }
+                            loading.setMessage(String.format("Loading %d from %d....", r, maxRow));
+                        }
+                        loading.show();
+
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Calendar from = Calendar.getInstance();
+                                from.set(Calendar.YEAR, datePickerFrom.getYear());
+                                from.set(Calendar.MONTH, datePickerFrom.getMonth());
+                                from.set(Calendar.DAY_OF_MONTH, datePickerFrom.getDayOfMonth());
+
+                                page++;
+                                loadList();
+                            }
+                        }, 1000);
+
+                    }
+                }
+            }
+        });
+        list = new ArrayList<ListModel>();
+        adapter = new ListViewAdapter(getContext(), list, getActivity());
+        listView.setAdapter(adapter);
 
         Bundle bundle = getArguments();
         if(bundle != null) {
             status = bundle.getInt(KEY_STATUS);
+
+            list.removeAll(list);
+            page = 1;
+            maxRow = -1;
             loadList();
         }
         return v;
     }
 
     /** ฟังก์ชั่นสำหรับดาวน์โหลดรายการการแจ้งเหตุจาก server **/
+//    public void loadList() {
+//        Calendar from = Calendar.getInstance();
+//        from.set(Calendar.YEAR, 1);
+//        from.set(Calendar.MONTH, 0);
+//        from.set(Calendar.DAY_OF_MONTH, 1990);
+//
+//        Calendar to = Calendar.getInstance();
+//
+//        loadList(from, to);
+//    }
+
     public void loadList() {
         Calendar from = Calendar.getInstance();
-        from.set(Calendar.YEAR, 1);
-        from.set(Calendar.MONTH, 0);
-        from.set(Calendar.DAY_OF_MONTH, 1990);
+        from.set(Calendar.YEAR, datePickerFrom.getYear());
+        from.set(Calendar.MONTH, datePickerFrom.getMonth());
+        from.set(Calendar.DAY_OF_MONTH, datePickerFrom.getDayOfMonth());
 
         Calendar to = Calendar.getInstance();
+        to.set(Calendar.YEAR, datePickerTo.getYear());
+        to.set(Calendar.MONTH, datePickerTo.getMonth());
+        to.set(Calendar.DAY_OF_MONTH, datePickerTo.getDayOfMonth());
 
-        loadList(to, to);
-    }
-
-    public void loadList(Calendar from, Calendar to) {
         /** ประกาศ parameter สำหรับสื่อสาร และเรียกใช้ฟังก์ชั่นบน server **/
         HashMap<String, String> params = new HashMap<String, String>();
-        final ArrayList<ListModel> list = new ArrayList<ListModel>();
 
         params.put("function", "get_accidents");
         params.put("status", Integer.toString(status));
         params.put("search", String.valueOf(searchView.getQuery()));
         params.put("from", EmergencyApplication.SQLSDF_REAL.format(from.getTime()));
-        params.put("to", EmergencyApplication.SQLSDF_REAL.format(to.getTime()));
+        params.put("to", EmergencyApplication.SQLSDF_REAL.format(from.getTime()));
         if (app.getPreferences().getString(Preferences.KEY_USER_TYPE).equals("0")) {
             params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
         }
+
+        params.put("page", String.valueOf(page));
+        params.put("row", String.valueOf(row));
+
         app.getHttpService().callPHP(params, new HTTPService.OnResponseCallback<JSONObject>() {
             @Override
             public void onResponse(boolean success, Throwable error, JSONObject data) {
                 if (data != null) {
                     try {
+                        maxRow = data.getInt("count");
+
                         JSONArray a = data.getJSONArray("array");
 
                         for (int i = 0; i < a.length(); i++) {
@@ -226,12 +309,13 @@ public class ListFragment extends Fragment {
                                     o.getString("type_image")
                             ));
                         }
-
-                        ListViewAdapter adapter = new ListViewAdapter(getContext(), list, getActivity());
-                        listView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } finally {
+                        loading.dismiss();
+                        isLoadMore = false;
                     }
                 }
             }

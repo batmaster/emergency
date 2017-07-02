@@ -119,12 +119,21 @@
 
             $url = 'http://'. $_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'] . "/";
 
-            echo json_encode(sql("SELECT a.id, a.type_id, at.title type, a.title, a.user_id, a.phone, a.officer_id, a.location_x, a.location_y, a.status, a.date, a.date_approve, at.color, CONCAT('$url', at.image) type_image
+            echo json_encode(array("count" => sql("SELECT COUNT(*) count
                 FROM accident a, accident_type at
                 WHERE a.type_id = at.id AND a.status = $status AND a.user_id LIKE '%$user_id%'
                 AND ((at.title LIKE '%$search%' OR a.title LIKE '%$search%') AND a.user_id LIKE '%$user_id%')
-                AND DATE('$from') <= DATE(a.date) AND DATE(a.date) <= DATE('$to')
-                ORDER BY a.date DESC $limit"));
+                AND DATE('$from') <= DATE(a.date) AND DATE(a.date) <= DATE('$to')", false)["count"],
+
+                "array" => sql("SELECT a.id, a.type_id, at.title type, a.title, a.user_id, a.phone, a.officer_id, a.location_x, a.location_y, a.status, a.date, a.date_approve, at.color, CONCAT('$url', at.image) type_image
+                    FROM accident a, accident_type at
+                    WHERE a.type_id = at.id AND a.status = $status AND a.user_id LIKE '%$user_id%'
+                    AND ((at.title LIKE '%$search%' OR a.title LIKE '%$search%') AND a.user_id LIKE '%$user_id%')
+                    AND DATE('$from') <= DATE(a.date) AND DATE(a.date) <= DATE('$to')
+                    ORDER BY a.date DESC $limit")["array"]
+                    )
+            );
+
         }
         else if ($function == "get_accident") {
             $aid = $_POST["aid"];
