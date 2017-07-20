@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.Window;
@@ -102,6 +103,10 @@ public class SummaryActivity extends AppCompatActivity {
         });
 
         barChart = (BarChart) findViewById(R.id.barChart);
+
+
+
+
         loadChart(calendar);
     }
 
@@ -128,7 +133,7 @@ public class SummaryActivity extends AppCompatActivity {
                             JSONObject o = a.getJSONObject(i);
 
                             colors[i] = Color.parseColor(o.getString("color"));
-                            types[i] = o.getString("amount") + " " + o.getString("title").replace("อุบัติเหตุ", "");
+                            types[i] = o.getString("title").replace("อุบัติเหตุ", "");
                             typeOrders.put(Integer.parseInt(o.getString("id")), i);
                         }
 
@@ -145,7 +150,64 @@ public class SummaryActivity extends AppCompatActivity {
 
                                         int maxday = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
+                                        // แบบเก่า
+
+//                                        float[][] xy = new float[maxday][maxtype];
+//
+//                                        for (int i = 0; i < a.length(); i++) {
+//                                            JSONObject o = a.getJSONObject(i);
+//                                            int d = Integer.parseInt(o.getString("date")) - 1;
+//                                            int t = typeOrders.get(Integer.parseInt(o.getString("type_id")));
+//                                            float am = Float.parseFloat(o.getString("amount"));
+//
+//                                            xy[d][t] = am;
+//                                        }
+//
+//                                        List<BarEntry> entries = new ArrayList<BarEntry>();
+//                                        for (int i = 0; i < maxday; i++) {
+//                                            entries.add(new BarEntry((i + 1), xy[i]));
+//                                        }
+//
+//                                        BarDataSet barDataSet = new BarDataSet(entries, "");
+//                                        barDataSet.setColors(colors);
+//                                        barDataSet.setStackLabels(types);
+//                                        BarData barData = new BarData(barDataSet);
+//                                        barData.setValueFormatter(new IValueFormatter() {
+//
+//                                            @Override
+//                                            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+//                                                if (value == 0) {
+//                                                    return "";
+//                                                }
+//                                                return String.format("%d", (int) value);
+//                                            }
+//                                        });
+//                                        barChart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
+//                                            @Override
+//                                            public String getFormattedValue(float value, AxisBase axis) {
+//                                                return String.format("%02d", (int) value);
+//                                            }
+//                                        });
+//                                        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+//                                            @Override
+//                                            public void onValueSelected(Entry e, Highlight h) {
+//
+//                                            }
+//
+//                                            @Override
+//                                            public void onNothingSelected() {
+//
+//                                            }
+//                                        });
+//                                        barChart.getDescription().setEnabled(false);
+//                                        barChart.setData(barData);
+//                                        barChart.invalidate();
+
+                                        ////
+
+
                                         float[][] xy = new float[maxtype][maxday];
+                                        int[] amount = new int[maxtype];
 
                                         for (int i = 0; i < a.length(); i++) {
                                             JSONObject o = a.getJSONObject(i);
@@ -154,25 +216,31 @@ public class SummaryActivity extends AppCompatActivity {
                                             float am = Float.parseFloat(o.getString("amount"));
 
                                             xy[t][d] = am;
+                                            amount[t] += am;
                                         }
-                                        List<IBarDataSet> sets = new ArrayList<IBarDataSet>();
-                                        for (int i = 0; i < maxtype; i++) {
 
-                                            List<BarEntry> entries = new ArrayList<BarEntry>();
+                                        ArrayList<ArrayList<BarEntry>> entriesLists = new ArrayList<ArrayList<BarEntry>>();
+                                        for (int i = 0; i < maxtype; i++) {
+                                            ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+
                                             for (int j = 0; j < maxday; j++) {
                                                 entries.add(new BarEntry((j + 1), xy[i][j]));
+
                                             }
 
-                                            BarDataSet barDataSet = new BarDataSet(entries, types[i]);
-                                            barDataSet.setColor(colors[i]);
-                                            sets.add(barDataSet);
+                                            entriesLists.add(entries);
+
+                                            types[i] = String.valueOf(amount[i]) + " " + types[i];
                                         }
 
-                                        int startYear = 1;
-                                        float groupSpace = 0.04f;
-                                        float barSpace = 0.02f; // x2 dataset
-                                        BarData barData = new BarData(sets);
-                                        barData.groupBars(startYear, groupSpace, barSpace);
+                                        ArrayList<IBarDataSet> sets = new ArrayList<IBarDataSet>();
+                                        for (int i = 0; i < maxtype; i++) {
+                                            BarDataSet typeSet = new BarDataSet(entriesLists.get(i), types[i]);
+                                            typeSet.setColor(colors[i]);
+                                            sets.add(typeSet);
+                                        }
+
+                                        BarData barData = new BarData(sets.get(0), sets.get(1), sets.get(2), sets.get(3));
                                         barData.setValueFormatter(new IValueFormatter() {
 
                                             @Override
@@ -202,6 +270,13 @@ public class SummaryActivity extends AppCompatActivity {
                                         });
                                         barChart.getDescription().setEnabled(false);
                                         barChart.setData(barData);
+
+                                        barChart.getBarData().setBarWidth(0.2f);
+
+                                        // restrict the x-axis range
+                                        barChart.getXAxis().setAxisMinimum(0);
+
+                                        barChart.groupBars(0, 0.15f, 0.03f);
                                         barChart.invalidate();
 
 
