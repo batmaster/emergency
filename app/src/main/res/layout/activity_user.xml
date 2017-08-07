@@ -8,7 +8,7 @@
     android:clickable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="com.example.application.emergency.activities.user.UserActivity">
+    tools:context="com.bstudio.application.emergency.com.bstudio.emergency.activities.user.UserActivity">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"

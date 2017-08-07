@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Emergency</string>
+    <string name="app_name">แจ้งเหตุมูลนิธิสยามรวมใจ</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
